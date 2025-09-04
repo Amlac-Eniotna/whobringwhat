@@ -1,0 +1,28 @@
+.scrollIndicator {
+  animation: fadeOnScroll linear;
+  animation-timeline: scroll(root);
+  animation-range: 0% 10%;
+  animation-fill-mode: both;
+}
+
+@keyframes fadeOnScroll {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+/* Support pour les navigateurs plus anciens */
+@supports not (animation-timeline: scroll()) {
+  .scrollIndicator {
+    animation: none;
+  }
+
+  /* Alternative avec intersection observer si n�cessaire */
+  .scrollIndicator.hidden {
+    opacity: 0;
+    transition: opacity 0.3s ease-out;
+  }
+}

@@ -88,7 +88,7 @@ export function CreateListItem() {
         <input
           type="text"
           placeholder="Quantité (facultatif)"
-          className="text-foreground focus:border-primary focus:ring-primary h-9 w-full max-w-16 rounded-md border bg-transparent p-2 backdrop-blur-xs outline-none focus:ring-1"
+          className="text-foreground focus:border-primary focus:ring-primary h-9 w-full max-w-24 rounded-md border bg-transparent p-2 backdrop-blur-xs outline-none focus:ring-1"
           value={quantity}
           onChange={(e) => setQuantity(e.target.value)}
           disabled={isSubmitting}

@@ -99,7 +99,7 @@ export function Item({ item }: ListItemProps) {
       <li className="mb-3 flex items-center justify-between gap-2">
         <div className="flex w-full items-center justify-between gap-2 divide-x border-b">
           <p className="flex h-9 w-full items-center p-3">{item.food}</p>
-          <p className="flex h-9 w-full max-w-12 items-center p-3 md:max-w-16">
+          <p className="flex h-9 w-full max-w-20 items-center p-3 md:max-w-24">
             {item.qt}
           </p>
         </div>
@@ -134,7 +134,7 @@ export function Item({ item }: ListItemProps) {
         <div className="flex w-full gap-2">
           <input
             type="text"
-            placeholder="Nom de l'article"
+            placeholder="Article"
             className="text-foreground focus:border-primary focus:ring-primary h-9 w-full rounded-md border bg-transparent px-3 backdrop-blur-xs outline-none focus:ring-1"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
@@ -145,8 +145,8 @@ export function Item({ item }: ListItemProps) {
           )}
           <input
             type="text"
-            placeholder="Quantité (facultatif)"
-            className="text-foreground focus:border-primary focus:ring-primary h-9 w-full max-w-16 rounded-md border bg-transparent px-3 backdrop-blur-xs outline-none focus:ring-1"
+            placeholder="Prénom (facultatif)"
+            className="text-foreground focus:border-primary focus:ring-primary h-9 w-full max-w-24 rounded-md border bg-transparent px-3 backdrop-blur-xs outline-none focus:ring-1"
             value={quantity}
             onChange={(e) => setQuantity(e.target.value)}
             disabled={isSubmitting}
