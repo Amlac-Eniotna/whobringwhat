@@ -40,7 +40,7 @@ export type Item = $Result.DefaultSelection<Prisma.$ItemPayload>
  */
 export class PrismaClient<
   ClientOptions extends Prisma.PrismaClientOptions = Prisma.PrismaClientOptions,
-  U = 'log' extends keyof ClientOptions ? ClientOptions['log'] extends Array<Prisma.LogLevel | Prisma.LogDefinition> ? Prisma.GetEvents<ClientOptions['log']> : never : never,
+  const U = 'log' extends keyof ClientOptions ? ClientOptions['log'] extends Array<Prisma.LogLevel | Prisma.LogDefinition> ? Prisma.GetEvents<ClientOptions['log']> : never : never,
   ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs
 > {
   [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['other'] }
@@ -72,13 +72,6 @@ export class PrismaClient<
    * Disconnect from the database
    */
   $disconnect(): $Utils.JsPromise<void>;
-
-  /**
-   * Add a middleware
-   * @deprecated since 4.16.0. For new code, prefer client extensions instead.
-   * @see https://pris.ly/d/extensions
-   */
-  $use(cb: Prisma.Middleware): void
 
 /**
    * Executes a prepared raw query and returns the number of affected rows.
@@ -226,8 +219,8 @@ export namespace Prisma {
   export import Exact = $Public.Exact
 
   /**
-   * Prisma Client JS version: 6.7.0
-   * Query Engine version: 3cff47a7f5d65c3ea74883f1d736e41d68ce91ed
+   * Prisma Client JS version: 6.15.0
+   * Query Engine version: 85179d7826409ee107a6ba334b5e305ae3fba9fb
    */
   export type PrismaVersion = {
     client: string
@@ -807,16 +800,24 @@ export namespace Prisma {
     /**
      * @example
      * ```
-     * // Defaults to stdout
+     * // Shorthand for `emit: 'stdout'`
      * log: ['query', 'info', 'warn', 'error']
      * 
-     * // Emit as events
+     * // Emit as events only
      * log: [
-     *   { emit: 'stdout', level: 'query' },
-     *   { emit: 'stdout', level: 'info' },
-     *   { emit: 'stdout', level: 'warn' }
-     *   { emit: 'stdout', level: 'error' }
+     *   { emit: 'event', level: 'query' },
+     *   { emit: 'event', level: 'info' },
+     *   { emit: 'event', level: 'warn' }
+     *   { emit: 'event', level: 'error' }
      * ]
+     * 
+     * / Emit as events and log to stdout
+     * og: [
+     *  { emit: 'stdout', level: 'query' },
+     *  { emit: 'stdout', level: 'info' },
+     *  { emit: 'stdout', level: 'warn' }
+     *  { emit: 'stdout', level: 'error' }
+     * 
      * ```
      * Read more in our [docs](https://www.prisma.io/docs/reference/tools-and-interfaces/prisma-client/logging#the-log-option).
      */
@@ -859,10 +860,15 @@ export namespace Prisma {
     emit: 'stdout' | 'event'
   }
 
-  export type GetLogType<T extends LogLevel | LogDefinition> = T extends LogDefinition ? T['emit'] extends 'event' ? T['level'] : never : never
-  export type GetEvents<T extends any> = T extends Array<LogLevel | LogDefinition> ?
-    GetLogType<T[0]> | GetLogType<T[1]> | GetLogType<T[2]> | GetLogType<T[3]>
-    : never
+  export type CheckIsLogLevel<T> = T extends LogLevel ? T : never;
+
+  export type GetLogType<T> = CheckIsLogLevel<
+    T extends LogDefinition ? T['level'] : T
+  >;
+
+  export type GetEvents<T extends any[]> = T extends Array<LogLevel | LogDefinition>
+    ? GetLogType<T[number]>
+    : never;
 
   export type QueryEvent = {
     timestamp: Date
@@ -902,25 +908,6 @@ export namespace Prisma {
     | 'runCommandRaw'
     | 'findRaw'
     | 'groupBy'
-
-  /**
-   * These options are being passed into the middleware as "params"
-   */
-  export type MiddlewareParams = {
-    model?: ModelName
-    action: PrismaAction
-    args: any
-    dataPath: string[]
-    runInTransaction: boolean
-  }
-
-  /**
-   * The `T` type makes sure, that the `return proceed` is not forgotten in the middleware implementation
-   */
-  export type Middleware<T = any> = (
-    params: MiddlewareParams,
-    next: (params: MiddlewareParams) => $Utils.JsPromise<T>,
-  ) => $Utils.JsPromise<T>
 
   // tested in getLogLevel.test.ts
   export function getLogLevel(log: Array<LogLevel | LogDefinition>): LogLevel | undefined;
@@ -1942,7 +1929,7 @@ export namespace Prisma {
     id: number | null
     listId: string | null
     title: string | null
-    quantity: string | null
+    who: string | null
     createdAt: Date | null
     updateAt: Date | null
   }
@@ -1951,7 +1938,7 @@ export namespace Prisma {
     id: number | null
     listId: string | null
     title: string | null
-    quantity: string | null
+    who: string | null
     createdAt: Date | null
     updateAt: Date | null
   }
@@ -1960,7 +1947,7 @@ export namespace Prisma {
     id: number
     listId: number
     title: number
-    quantity: number
+    who: number
     createdAt: number
     updateAt: number
     _all: number
@@ -1979,7 +1966,7 @@ export namespace Prisma {
     id?: true
     listId?: true
     title?: true
-    quantity?: true
+    who?: true
     createdAt?: true
     updateAt?: true
   }
@@ -1988,7 +1975,7 @@ export namespace Prisma {
     id?: true
     listId?: true
     title?: true
-    quantity?: true
+    who?: true
     createdAt?: true
     updateAt?: true
   }
@@ -1997,7 +1984,7 @@ export namespace Prisma {
     id?: true
     listId?: true
     title?: true
-    quantity?: true
+    who?: true
     createdAt?: true
     updateAt?: true
     _all?: true
@@ -2093,7 +2080,7 @@ export namespace Prisma {
     id: number
     listId: string
     title: string
-    quantity: string | null
+    who: string | null
     createdAt: Date
     updateAt: Date
     _count: ItemCountAggregateOutputType | null
@@ -2121,7 +2108,7 @@ export namespace Prisma {
     id?: boolean
     listId?: boolean
     title?: boolean
-    quantity?: boolean
+    who?: boolean
     createdAt?: boolean
     updateAt?: boolean
     list?: boolean | ListDefaultArgs<ExtArgs>
@@ -2133,12 +2120,12 @@ export namespace Prisma {
     id?: boolean
     listId?: boolean
     title?: boolean
-    quantity?: boolean
+    who?: boolean
     createdAt?: boolean
     updateAt?: boolean
   }
 
-  export type ItemOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "listId" | "title" | "quantity" | "createdAt" | "updateAt", ExtArgs["result"]["item"]>
+  export type ItemOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "listId" | "title" | "who" | "createdAt" | "updateAt", ExtArgs["result"]["item"]>
   export type ItemInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     list?: boolean | ListDefaultArgs<ExtArgs>
   }
@@ -2152,7 +2139,7 @@ export namespace Prisma {
       id: number
       listId: string
       title: string
-      quantity: string | null
+      who: string | null
       createdAt: Date
       updateAt: Date
     }, ExtArgs["result"]["item"]>
@@ -2528,7 +2515,7 @@ export namespace Prisma {
     readonly id: FieldRef<"Item", 'Int'>
     readonly listId: FieldRef<"Item", 'String'>
     readonly title: FieldRef<"Item", 'String'>
-    readonly quantity: FieldRef<"Item", 'String'>
+    readonly who: FieldRef<"Item", 'String'>
     readonly createdAt: FieldRef<"Item", 'DateTime'>
     readonly updateAt: FieldRef<"Item", 'DateTime'>
   }
@@ -2920,7 +2907,7 @@ export namespace Prisma {
     id: 'id',
     listId: 'listId',
     title: 'title',
-    quantity: 'quantity',
+    who: 'who',
     createdAt: 'createdAt',
     updateAt: 'updateAt'
   };
@@ -2955,7 +2942,7 @@ export namespace Prisma {
   export const ItemOrderByRelevanceFieldEnum: {
     listId: 'listId',
     title: 'title',
-    quantity: 'quantity'
+    who: 'who'
   };
 
   export type ItemOrderByRelevanceFieldEnum = (typeof ItemOrderByRelevanceFieldEnum)[keyof typeof ItemOrderByRelevanceFieldEnum]
@@ -3055,7 +3042,7 @@ export namespace Prisma {
     id?: IntFilter<"Item"> | number
     listId?: StringFilter<"Item"> | string
     title?: StringFilter<"Item"> | string
-    quantity?: StringNullableFilter<"Item"> | string | null
+    who?: StringNullableFilter<"Item"> | string | null
     createdAt?: DateTimeFilter<"Item"> | Date | string
     updateAt?: DateTimeFilter<"Item"> | Date | string
     list?: XOR<ListScalarRelationFilter, ListWhereInput>
@@ -3065,7 +3052,7 @@ export namespace Prisma {
     id?: SortOrder
     listId?: SortOrder
     title?: SortOrder
-    quantity?: SortOrderInput | SortOrder
+    who?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updateAt?: SortOrder
     list?: ListOrderByWithRelationInput
@@ -3079,7 +3066,7 @@ export namespace Prisma {
     NOT?: ItemWhereInput | ItemWhereInput[]
     listId?: StringFilter<"Item"> | string
     title?: StringFilter<"Item"> | string
-    quantity?: StringNullableFilter<"Item"> | string | null
+    who?: StringNullableFilter<"Item"> | string | null
     createdAt?: DateTimeFilter<"Item"> | Date | string
     updateAt?: DateTimeFilter<"Item"> | Date | string
     list?: XOR<ListScalarRelationFilter, ListWhereInput>
@@ -3089,7 +3076,7 @@ export namespace Prisma {
     id?: SortOrder
     listId?: SortOrder
     title?: SortOrder
-    quantity?: SortOrderInput | SortOrder
+    who?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updateAt?: SortOrder
     _count?: ItemCountOrderByAggregateInput
@@ -3106,7 +3093,7 @@ export namespace Prisma {
     id?: IntWithAggregatesFilter<"Item"> | number
     listId?: StringWithAggregatesFilter<"Item"> | string
     title?: StringWithAggregatesFilter<"Item"> | string
-    quantity?: StringNullableWithAggregatesFilter<"Item"> | string | null
+    who?: StringNullableWithAggregatesFilter<"Item"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"Item"> | Date | string
     updateAt?: DateTimeWithAggregatesFilter<"Item"> | Date | string
   }
@@ -3166,7 +3153,7 @@ export namespace Prisma {
 
   export type ItemCreateInput = {
     title: string
-    quantity?: string | null
+    who?: string | null
     createdAt?: Date | string
     updateAt?: Date | string
     list: ListCreateNestedOneWithoutItemInput
@@ -3176,14 +3163,14 @@ export namespace Prisma {
     id?: number
     listId: string
     title: string
-    quantity?: string | null
+    who?: string | null
     createdAt?: Date | string
     updateAt?: Date | string
   }
 
   export type ItemUpdateInput = {
     title?: StringFieldUpdateOperationsInput | string
-    quantity?: NullableStringFieldUpdateOperationsInput | string | null
+    who?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updateAt?: DateTimeFieldUpdateOperationsInput | Date | string
     list?: ListUpdateOneRequiredWithoutItemNestedInput
@@ -3193,7 +3180,7 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     listId?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
-    quantity?: NullableStringFieldUpdateOperationsInput | string | null
+    who?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updateAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -3202,14 +3189,14 @@ export namespace Prisma {
     id?: number
     listId: string
     title: string
-    quantity?: string | null
+    who?: string | null
     createdAt?: Date | string
     updateAt?: Date | string
   }
 
   export type ItemUpdateManyMutationInput = {
     title?: StringFieldUpdateOperationsInput | string
-    quantity?: NullableStringFieldUpdateOperationsInput | string | null
+    who?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updateAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -3218,7 +3205,7 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     listId?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
-    quantity?: NullableStringFieldUpdateOperationsInput | string | null
+    who?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updateAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -3364,7 +3351,7 @@ export namespace Prisma {
     id?: SortOrder
     listId?: SortOrder
     title?: SortOrder
-    quantity?: SortOrder
+    who?: SortOrder
     createdAt?: SortOrder
     updateAt?: SortOrder
   }
@@ -3377,7 +3364,7 @@ export namespace Prisma {
     id?: SortOrder
     listId?: SortOrder
     title?: SortOrder
-    quantity?: SortOrder
+    who?: SortOrder
     createdAt?: SortOrder
     updateAt?: SortOrder
   }
@@ -3386,7 +3373,7 @@ export namespace Prisma {
     id?: SortOrder
     listId?: SortOrder
     title?: SortOrder
-    quantity?: SortOrder
+    who?: SortOrder
     createdAt?: SortOrder
     updateAt?: SortOrder
   }
@@ -3647,7 +3634,7 @@ export namespace Prisma {
 
   export type ItemCreateWithoutListInput = {
     title: string
-    quantity?: string | null
+    who?: string | null
     createdAt?: Date | string
     updateAt?: Date | string
   }
@@ -3655,7 +3642,7 @@ export namespace Prisma {
   export type ItemUncheckedCreateWithoutListInput = {
     id?: number
     title: string
-    quantity?: string | null
+    who?: string | null
     createdAt?: Date | string
     updateAt?: Date | string
   }
@@ -3693,7 +3680,7 @@ export namespace Prisma {
     id?: IntFilter<"Item"> | number
     listId?: StringFilter<"Item"> | string
     title?: StringFilter<"Item"> | string
-    quantity?: StringNullableFilter<"Item"> | string | null
+    who?: StringNullableFilter<"Item"> | string | null
     createdAt?: DateTimeFilter<"Item"> | Date | string
     updateAt?: DateTimeFilter<"Item"> | Date | string
   }
@@ -3745,14 +3732,14 @@ export namespace Prisma {
   export type ItemCreateManyListInput = {
     id?: number
     title: string
-    quantity?: string | null
+    who?: string | null
     createdAt?: Date | string
     updateAt?: Date | string
   }
 
   export type ItemUpdateWithoutListInput = {
     title?: StringFieldUpdateOperationsInput | string
-    quantity?: NullableStringFieldUpdateOperationsInput | string | null
+    who?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updateAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -3760,7 +3747,7 @@ export namespace Prisma {
   export type ItemUncheckedUpdateWithoutListInput = {
     id?: IntFieldUpdateOperationsInput | number
     title?: StringFieldUpdateOperationsInput | string
-    quantity?: NullableStringFieldUpdateOperationsInput | string | null
+    who?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updateAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -3768,7 +3755,7 @@ export namespace Prisma {
   export type ItemUncheckedUpdateManyWithoutListInput = {
     id?: IntFieldUpdateOperationsInput | number
     title?: StringFieldUpdateOperationsInput | string
-    quantity?: NullableStringFieldUpdateOperationsInput | string | null
+    who?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updateAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }

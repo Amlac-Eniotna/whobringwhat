@@ -8,7 +8,7 @@ import { Button } from "../ui/button";
 // Define proper types for the error structure
 type FieldErrors = {
   title?: string[];
-  quantity?: string[];
+  who?: string[];
   listId?: string[];
   _form?: string[];
 };
@@ -18,7 +18,7 @@ export function CreateListItem() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errors, setErrors] = useState<FieldErrors>({});
   const [title, setTitle] = useState("");
-  const [quantity, setQuantity] = useState("");
+  const [who, setWho] = useState("");
 
   const params = useParams();
   const listId = params.id as string;
@@ -31,7 +31,7 @@ export function CreateListItem() {
       const result = await addItem({
         listId,
         title,
-        quantity: quantity || undefined,
+        who: who || undefined,
       });
 
       if (!result.success) {
@@ -42,7 +42,7 @@ export function CreateListItem() {
 
       // Reset form and close
       setTitle("");
-      setQuantity("");
+      setWho("");
       setIsCreating(false);
       setIsSubmitting(false);
     } catch (error) {
@@ -54,7 +54,7 @@ export function CreateListItem() {
 
   const handleCancel = () => {
     setTitle("");
-    setQuantity("");
+    setWho("");
     setErrors({});
     setIsCreating(false);
   };
@@ -89,12 +89,12 @@ export function CreateListItem() {
           type="text"
           placeholder="Prénom (facultatif)"
           className="text-foreground focus:border-primary focus:ring-primary h-9 w-full max-w-24 rounded-md border bg-transparent p-2 backdrop-blur-xs outline-none focus:ring-1"
-          value={quantity}
-          onChange={(e) => setQuantity(e.target.value)}
+          value={who}
+          onChange={(e) => setWho(e.target.value)}
           disabled={isSubmitting}
         />
-        {errors.quantity && (
-          <p className="text-destructive mt-1 text-xs">{errors.quantity[0]}</p>
+        {errors.who && (
+          <p className="text-destructive mt-1 text-xs">{errors.who[0]}</p>
         )}
       </div>
 

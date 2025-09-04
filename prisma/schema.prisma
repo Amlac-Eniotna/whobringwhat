@@ -27,7 +27,7 @@ model Item {
   list      List @relation(fields: [listId], references: [id])
   listId    String
   title     String
-  quantity  String?
+  who  String?
   createdAt DateTime @default(now())
   updateAt  DateTime @updatedAt
 }

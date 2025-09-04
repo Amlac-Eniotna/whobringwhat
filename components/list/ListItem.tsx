@@ -9,7 +9,7 @@ import { Button } from "../ui/button";
 // Define proper types for the error structure
 type FieldErrors = {
   title?: string[];
-  quantity?: string[];
+  who?: string[];
   id?: string[];
   _form?: string[];
 };
@@ -18,7 +18,7 @@ export interface ListItemProps {
   item: {
     id: number;
     food: string;
-    qt: string;
+    who: string;
   };
 }
 
@@ -27,7 +27,7 @@ export function Item({ item }: ListItemProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [title, setTitle] = useState(item.food);
-  const [quantity, setQuantity] = useState(item.qt);
+  const [who, setWho] = useState(item.who);
   const [errors, setErrors] = useState<FieldErrors>({});
 
   const params = useParams();
@@ -42,7 +42,7 @@ export function Item({ item }: ListItemProps) {
         id: item.id,
         listId,
         title,
-        quantity,
+        who,
       });
 
       if (!result.success) {
@@ -89,7 +89,7 @@ export function Item({ item }: ListItemProps) {
   const handleCancel = () => {
     // Reset to original values
     setTitle(item.food);
-    setQuantity(item.qt);
+    setWho(item.who);
     setErrors({});
     setIsEditing(false);
   };
@@ -100,7 +100,7 @@ export function Item({ item }: ListItemProps) {
         <div className="flex w-full items-center justify-between gap-2 divide-x border-b">
           <p className="flex h-9 w-full items-center p-3">{item.food}</p>
           <p className="flex h-9 w-full max-w-20 items-center p-3 md:max-w-24">
-            {item.qt}
+            {item.who}
           </p>
         </div>
         <div className="flex gap-2">
@@ -147,14 +147,12 @@ export function Item({ item }: ListItemProps) {
             type="text"
             placeholder="Prénom (facultatif)"
             className="text-foreground focus:border-primary focus:ring-primary h-9 w-full max-w-24 rounded-md border bg-transparent px-3 backdrop-blur-xs outline-none focus:ring-1"
-            value={quantity}
-            onChange={(e) => setQuantity(e.target.value)}
+            value={who}
+            onChange={(e) => setWho(e.target.value)}
             disabled={isSubmitting}
           />
-          {errors.quantity && (
-            <p className="text-destructive mt-1 text-xs">
-              {errors.quantity[0]}
-            </p>
+          {errors.who && (
+            <p className="text-destructive mt-1 text-xs">{errors.who[0]}</p>
           )}
         </div>
 

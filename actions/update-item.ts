@@ -12,7 +12,7 @@ const UpdateItemSchema = z.object({
     .string()
     .min(1, "Item name is required")
     .max(100, "Item name is too long"),
-  quantity: z.string().optional(),
+  who: z.string().optional(),
 });
 
 export type UpdateItemInput = z.infer<typeof UpdateItemSchema>;
@@ -26,7 +26,7 @@ export async function updateItem(formData: FormData | UpdateItemInput) {
             id: Number(formData.get("id")) || 0,
             listId: formData.get("listId")?.toString() || "",
             title: formData.get("title")?.toString() || "",
-            quantity: formData.get("quantity")?.toString() || undefined,
+            who: formData.get("who")?.toString() || undefined,
           }
         : formData;
 
@@ -57,7 +57,7 @@ export async function updateItem(formData: FormData | UpdateItemInput) {
       where: { id: validatedData.data.id },
       data: {
         title: validatedData.data.title,
-        quantity: validatedData.data.quantity,
+        who: validatedData.data.who,
       },
     });
 

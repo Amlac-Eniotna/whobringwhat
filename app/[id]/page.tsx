@@ -45,7 +45,7 @@ const List = ({
     item: Array<{
       id: number;
       title: string;
-      quantity: string | null;
+      who: string | null;
     }>;
   };
 }) => {
@@ -60,7 +60,7 @@ const List = ({
               item={{
                 id: item.id,
                 food: item.title,
-                qt: item.quantity || "",
+                who: item.who || "",
               }}
               key={item.id}
             />

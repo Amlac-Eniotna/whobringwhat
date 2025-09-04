@@ -23,7 +23,7 @@ async function createList() {
       list = await prisma.list.create({
         data: {
           id,
-          title: id,
+          title: `Titre ${id}`,
         },
       });
 

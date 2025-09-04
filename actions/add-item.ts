@@ -11,7 +11,7 @@ const AddItemSchema = z.object({
     .string()
     .min(1, "Le nom de l'article est requis")
     .max(100, "Le nom de l'article est trop long"),
-  quantity: z.string().optional(),
+  who: z.string().optional(),
 });
 
 export type AddItemInput = z.infer<typeof AddItemSchema>;
@@ -24,7 +24,7 @@ export async function addItem(formData: FormData | AddItemInput) {
         ? {
             listId: formData.get("listId")?.toString() || "",
             title: formData.get("title")?.toString() || "",
-            quantity: formData.get("quantity")?.toString() || undefined,
+            who: formData.get("who")?.toString() || undefined,
           }
         : formData;
 
@@ -55,7 +55,7 @@ export async function addItem(formData: FormData | AddItemInput) {
       data: {
         listId: validatedData.data.listId,
         title: validatedData.data.title,
-        quantity: validatedData.data.quantity,
+        who: validatedData.data.who,
       },
     });
 
