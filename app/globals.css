@@ -103,6 +103,14 @@
 
 body {
   background-color: var(--background);
+}
+
+.dark body {
+  color: var(--foreground);
+  background-color: var(--background);
+}
+
+#bg-animate {
   background-image:
     radial-gradient(
       ellipse at center,
@@ -117,9 +125,7 @@ body {
   animation: pan 96s linear infinite;
 }
 
-.dark body {
-  color: var(--foreground);
-  background-color: var(--background);
+.dark #bg-animate {
   background-image:
     radial-gradient(
       ellipse at center,
