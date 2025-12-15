@@ -23,7 +23,14 @@ const syne = Syne({
 
 export const metadata: Metadata = {
   title: "QuiRamèneQuoi",
-  description: "Liste entre amis pour vos sorties et soirées",
+  description: "L'application simple pour gérer les listes de courses et d'organisation pour vos soirées, week-ends et événements entre amis.",
+  applicationName: "QuiRamèneQuoi",
+  authors: [{ name: "Antoine Calma" }], // Presumed author from context, adjustable
+  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || "https://quiramenequoi.fr"),
+  keywords: ["soirée", "amis", "liste", "courses", "organisation", "événements", "partage"],
+  alternates: {
+    canonical: "./",
+  },
 };
 
 export default function RootLayout({
