@@ -9,6 +9,12 @@
     "lint": "next lint",
     "coolify-build": "prisma generate && prisma migrate deploy && next build"
   },
+  "browserslist": [
+    "chrome >= 90",
+    "firefox >= 90",
+    "safari >= 14",
+    "edge >= 90"
+  ],
   "dependencies": {
     "@prisma/client": "^6.19.1",
     "@radix-ui/react-dropdown-menu": "^2.1.7",
