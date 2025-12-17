@@ -5,6 +5,7 @@ CREATE TABLE `List` (
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updateAt` DATETIME(3) NOT NULL,
 
+    UNIQUE INDEX `List_id_key`(`id`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -13,7 +14,7 @@ CREATE TABLE `Item` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `listId` VARCHAR(191) NOT NULL,
     `title` VARCHAR(191) NOT NULL,
-    `quantity` VARCHAR(191) NULL,
+    `who` VARCHAR(191) NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updateAt` DATETIME(3) NOT NULL,
 
