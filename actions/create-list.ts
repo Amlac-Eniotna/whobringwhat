@@ -1,8 +1,8 @@
 // actions/create-list.ts
 "use server";
 
+import { Prisma } from "@/lib/generated/prisma";
 import { prisma } from "@/lib/prisma"; // Importer l'instance partagée
-import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 import crypto from "crypto";
 import { redirect } from "next/navigation";
 
@@ -30,7 +30,7 @@ async function createList() {
       created = true;
     } catch (error) {
       // Vérifier si l'erreur est de type PrismaClientKnownRequestError
-      if (error instanceof PrismaClientKnownRequestError) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
         if (
           error.code === "P2002" &&
           error.meta?.target &&
