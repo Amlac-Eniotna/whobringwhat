@@ -3,7 +3,7 @@ import { updateListTitle } from "@/actions/update-list-title";
 import { useToast } from "@/components/ui/use-toast";
 import { Check, Loader2, Pen, Share2, X } from "lucide-react";
 import { useParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Button } from "../ui/button";
 
 // Define proper types for the error structure
@@ -23,6 +23,7 @@ export function ListTitle({ title }: ListTitleProps) {
   const [titleText, setTitleText] = useState(title);
   const [errors, setErrors] = useState<FieldErrors>({});
   const [canShare, setCanShare] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const params = useParams();
   const listId = params.id as string;
@@ -43,6 +44,15 @@ export function ListTitle({ title }: ListTitleProps) {
       setCanShare(false);
     }
   }, []);
+
+  // Auto-focus input when editing mode is activated
+  useEffect(() => {
+    if (isEditing && inputRef.current) {
+      inputRef.current.focus();
+      // Optionally, select all text for easier editing
+      inputRef.current.select();
+    }
+  }, [isEditing]);
 
   const handleUpdate = async () => {
     setIsSubmitting(true);
@@ -74,6 +84,16 @@ export function ListTitle({ title }: ListTitleProps) {
     setTitleText(title);
     setErrors({});
     setIsEditing(false);
+  };
+
+  const handleBlur = () => {
+    // Validate on blur (clicking outside the input)
+    // Use a small timeout to allow button clicks to execute first
+    setTimeout(() => {
+      if (isEditing && !isSubmitting) {
+        handleUpdate();
+      }
+    }, 150);
   };
 
   const copyToClipboardFallback = (text: string) => {
@@ -238,7 +258,11 @@ export function ListTitle({ title }: ListTitleProps) {
     return (
       <div className="flex w-full items-center justify-between">
         <div className="flex w-full items-center justify-between gap-2">
-          <h1 className="m-auto w-full text-center text-xl text-black dark:text-white">
+          <h1 
+            className="m-auto w-full text-center text-xl text-black dark:text-white cursor-pointer hover:opacity-80 transition-opacity"
+            onClick={() => setIsEditing(true)}
+            title="Cliquer pour modifier"
+          >
             {title}
           </h1>
           <div className="flex gap-2">
@@ -271,11 +295,22 @@ export function ListTitle({ title }: ListTitleProps) {
     <div className="flex w-full gap-2 rounded-md">
       <div className="w-full">
         <input
+          ref={inputRef}
           type="text"
           placeholder="Titre de la liste"
-          className="text-foreground focus:border-primary focus:ring-primary h-9 w-full rounded-md border bg-transparent p-2 text-lg font-medium backdrop-blur-xs outline-none focus:ring-1"
+          className="text-center text-foreground focus:border-primary focus:ring-primary h-9 w-full rounded-md border bg-transparent p-2 text-lg font-medium backdrop-blur-xs outline-none focus:ring-1"
           value={titleText}
           onChange={(e) => setTitleText(e.target.value)}
+          onBlur={handleBlur}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              e.preventDefault();
+              handleUpdate();
+            } else if (e.key === "Escape") {
+              e.preventDefault();
+              handleCancel();
+            }
+          }}
           disabled={isSubmitting}
         />
         {errors.title && (
@@ -289,7 +324,10 @@ export function ListTitle({ title }: ListTitleProps) {
 
       <div className="flex gap-2">
         <Button
-          onClick={handleUpdate}
+          onMouseDown={(e) => {
+            e.preventDefault();
+            handleUpdate();
+          }}
           disabled={isSubmitting}
           className="border border-white"
         >
@@ -302,7 +340,10 @@ export function ListTitle({ title }: ListTitleProps) {
         <Button
           variant="outline"
           className="backdrop-blur-xs"
-          onClick={handleCancel}
+          onMouseDown={(e) => {
+            e.preventDefault();
+            handleCancel();
+          }}
           disabled={isSubmitting}
         >
           <X className="h-4 w-4" />
