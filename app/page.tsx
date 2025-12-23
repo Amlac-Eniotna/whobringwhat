@@ -22,8 +22,7 @@ export default function Home() {
             <AlertTriangle className="h-4 w-4 shrink-0" />
             <p>
               Toutes nos excuses pour la gêne occasionnée par le crash récent de
-              nos serveurs.
-              Nous travaillons activement pour résoudre ce problème et assurer
+              nos serveurs. Nous travaillons activement pour résoudre ce problème et assurer
               une meilleure stabilité.
             </p>
           </div>
