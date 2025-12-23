@@ -23,7 +23,6 @@ export default function Home() {
             <p>
               Toutes nos excuses pour la gêne occasionnée par le crash récent de
               nos serveurs.
-              <br />
               Nous travaillons activement pour résoudre ce problème et assurer
               une meilleure stabilité.
             </p>
