@@ -6,13 +6,10 @@ import { prisma } from "@/lib/prisma"; // Importer l'instance partagée
 import crypto from "crypto";
 
 export async function redirectList() {
-  console.log("redirectList called. DB URL available:", !!process.env.DATABASE_URL);
   try {
     const list = await createList();
-    console.log("List created with ID:", list.id);
     return { success: true, listId: list.id };
   } catch (error: any) {
-    console.error("Error in redirectList:", error);
     return { success: false, error: error.message || "Unknown error" };
   }
 }

@@ -1,6 +1,7 @@
 import { ThemeProvider } from "@/components/theme/theme-provider";
 import { ModeToggle } from "@/components/theme/toggle-theme";
 import { Toaster } from "@/components/ui/toaster";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import type { Metadata } from "next";
 import { Nunito, Nunito_Sans, Syne } from "next/font/google";
 import Link from "next/link";
@@ -62,6 +63,7 @@ export default function RootLayout({
           {children}
           <Toaster />
         </ThemeProvider>
+        <SpeedInsights/>
       </body>
     </html>
   );

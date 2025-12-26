@@ -20,7 +20,6 @@ export function StartButton() {
         setIsLoading(false);
       }
     } catch (error) {
-      console.error("Failed to create list:", error);
       alert("Erreur critique: " + error);
       setIsLoading(false);
     }
