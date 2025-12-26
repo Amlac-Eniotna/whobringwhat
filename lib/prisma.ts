@@ -6,23 +6,20 @@ const globalForPrisma = global as unknown as {
 };
 
 // Parse DATABASE_URL to extract connection details
-const databaseUrl = process.env.DATABASE_URL || "";
-const urlMatch = databaseUrl.match(
-  /mysql:\/\/([^:]+):([^@]+)@([^:]+):(\d+)\/(.+)/
-);
+const databaseUrl = process.env.DATABASE_URL;
 
-if (!urlMatch) {
-  throw new Error("Invalid DATABASE_URL format");
+if (!databaseUrl) {
+  throw new Error("DATABASE_URL is not defined in environment variables");
 }
 
-const [, user, password, host, port, database] = urlMatch;
+const url = new URL(databaseUrl);
 
 const adapter = new PrismaMariaDb({
-  host,
-  user,
-  password,
-  database,
-  port: parseInt(port, 10),
+  host: url.hostname,
+  user: url.username,
+  password: url.password,
+  database: url.pathname.slice(1), // Remove leading slash
+  port: parseInt(url.port, 10) || 3306, // Default to 3306 if port is missing
 });
 
 export const prisma =
