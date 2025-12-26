@@ -1,18 +1,27 @@
 "use client";
 import { redirectList } from "@/actions/create-list";
 import { Loader2, NotebookPen } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Button } from "../ui/button";
 
 export function StartButton() {
   const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
 
   async function handleCreateList() {
     try {
       setIsLoading(true);
-      await redirectList();
+      const result = await redirectList();
+      if (result.success && result.listId) {
+        router.push(`/${result.listId}`);
+      } else {
+        alert("Erreur: " + (result.error || "Une erreur inconnue est survenue"));
+        setIsLoading(false);
+      }
     } catch (error) {
       console.error("Failed to create list:", error);
+      alert("Erreur critique: " + error);
       setIsLoading(false);
     }
   }
