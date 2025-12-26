@@ -7,8 +7,15 @@ import crypto from "crypto";
 import { redirect } from "next/navigation";
 
 export async function redirectList() {
-  const list = await createList();
-  redirect(`/${list.id}`);
+  console.log("redirectList called. DB URL available:", !!process.env.DATABASE_URL);
+  try {
+    const list = await createList();
+    console.log("List created with ID:", list.id);
+    redirect(`/${list.id}`);
+  } catch (error) {
+    console.error("Error in redirectList:", error);
+    throw error;
+  }
 }
 
 async function createList() {
