@@ -2,7 +2,16 @@ import { PrismaPg } from "@prisma/adapter-pg";
 import { Pool } from "pg";
 import { PrismaClient } from "./generated/prisma";
 
-const connectionString = `${process.env.DATABASE_URL}`;
+const connectionString =
+  process.env.DATABASE_URL ||
+  process.env.POSTGRES_URL ||
+  process.env.PRISMA_DATABASE_URL;
+
+if (!connectionString) {
+  throw new Error(
+    "No valid database connection string found in environment (DATABASE_URL, POSTGRES_URL, PRISMA_DATABASE_URL)"
+  );
+}
 
 const pool = new Pool({ connectionString });
 const adapter = new PrismaPg(pool);

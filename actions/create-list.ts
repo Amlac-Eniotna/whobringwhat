@@ -8,13 +8,17 @@ import { redirect } from "next/navigation";
 
 export async function redirectList() {
   console.log("redirectList called. DB URL available:", !!process.env.DATABASE_URL);
+  let list;
   try {
-    const list = await createList();
+    list = await createList();
     console.log("List created with ID:", list.id);
-    redirect(`/${list.id}`);
   } catch (error) {
     console.error("Error in redirectList:", error);
     throw error;
+  }
+  
+  if (list?.id) {
+    redirect(`/${list.id}`);
   }
 }
 
