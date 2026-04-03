@@ -1,8 +1,14 @@
+import Link from "next/link";
 import { CreateListItem } from "@/components/list/CreateListItem";
 import { Item } from "@/components/list/ListItem";
 import { ListTitle } from "@/components/list/ListTitle";
 import { StartButton } from "@/components/start-button/start-button";
 import { prisma } from "@/lib/prisma";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  robots: "noindex, nofollow",
+};
 
 const Page = async ({ params }: { params: Promise<{ id: string }> }) => {
   const id = (await params).id;
@@ -26,11 +32,15 @@ const E404 = () => {
     <>
       <StartButton />
       <p className="max-w-lg text-sm text-pretty text-gray-500 dark:text-gray-600">
-        En cliquant sur «Créer une liste», vous consentez au stockage et à la
-        vente de vos données de manière anonyme pour une durée de 2 ans. Ces
-        données sont essentielles pour faire vivre notre plateforme. Veuillez
-        noter que l{"'"}utilisation de l{"'"}application implique nécessairement
-        la collecte de ces données.
+        En cliquant sur «Créer une liste», vous acceptez nos{" "}
+        <Link href="/terms" className="underline hover:text-gray-700 dark:hover:text-gray-500">
+          conditions d{"'"}utilisation
+        </Link>
+        {" "}et notre{" "}
+        <Link href="/privacy" className="underline hover:text-gray-700 dark:hover:text-gray-500">
+          politique de confidentialité
+        </Link>
+        . Vos données sont stockées de manière anonyme pendant 2 ans.
       </p>
     </>
   );
