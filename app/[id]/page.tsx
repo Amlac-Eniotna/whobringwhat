@@ -51,6 +51,9 @@ const List = ({
 }) => {
   return (
     <>
+      <p className="rounded-md border border-gray-200 px-3 py-2 text-sm text-gray-600 dark:border-gray-800 dark:text-gray-400">
+        Gardez ce lien pour retrouver votre liste sur tous vos appareils.
+      </p>
       <ListTitle title={data.title} />
 
       <ul className="w-full">
