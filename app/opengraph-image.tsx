@@ -74,8 +74,8 @@ export default async function Image() {
           <img
             src={logoSrc}
             alt="QuiRamèneQuoi Logo"
-            width="106"
-            height="192"
+            width={106}
+            height={192}
           />
           <div style={{ display: "flex", flexDirection: "column" }}>
             <div

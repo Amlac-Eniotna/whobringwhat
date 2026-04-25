@@ -34,11 +34,11 @@ export default function Icon() {
           borderRadius: '20%', // Rounded corners for icon
         }}
       >
-         <img 
-            src={logoSrc} 
-            alt="Icon" 
-            width="32" 
-            height="32" 
+         <img
+            src={logoSrc}
+            alt="Icon"
+            width={32}
+            height={32}
           />
       </div>
     ),

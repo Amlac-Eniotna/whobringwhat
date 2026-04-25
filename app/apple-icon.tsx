@@ -31,11 +31,11 @@ export default function Icon() {
           // but a white background is good.
         }}
       >
-         <img 
-            src={logoSrc} 
-            alt="Icon" 
-            width="128" 
-            height="128" 
+         <img
+            src={logoSrc}
+            alt="Icon"
+            width={128}
+            height={128}
           />
       </div>
     ),
