@@ -1,6 +1,7 @@
 "use server";
 
 import { prisma } from "@/lib/prisma";
+import { getClientIp, rateLimit } from "@/lib/rate-limit";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 
@@ -19,6 +20,15 @@ export async function updateListTitle(
   formData: FormData | UpdateListTitleInput,
 ) {
   try {
+    const ip = await getClientIp();
+    const limit = rateLimit(`update-list-title:${ip}`, 60, 60_000);
+    if (!limit.ok) {
+      return {
+        success: false,
+        error: { _form: ["Trop de requêtes, réessayez dans une minute."] },
+      };
+    }
+
     // Parse input data based on input type
     const inputData =
       formData instanceof FormData

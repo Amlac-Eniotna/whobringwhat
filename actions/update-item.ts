@@ -1,10 +1,10 @@
 "use server";
 
 import { prisma } from "@/lib/prisma";
+import { getClientIp, rateLimit } from "@/lib/rate-limit";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 
-// Zod schema for input validation
 const UpdateItemSchema = z.object({
   id: z.number().int().positive("Item ID is required"),
   listId: z.string().min(1, "List ID is required"),
@@ -12,14 +12,22 @@ const UpdateItemSchema = z.object({
     .string()
     .min(1, "Item name is required")
     .max(100, "Item name is too long"),
-  who: z.string().optional(),
+  who: z.string().max(50, "Prénom trop long").optional(),
 });
 
 export type UpdateItemInput = z.infer<typeof UpdateItemSchema>;
 
 export async function updateItem(formData: FormData | UpdateItemInput) {
   try {
-    // Parse input data based on input type
+    const ip = await getClientIp();
+    const limit = rateLimit(`update-item:${ip}`, 60, 60_000);
+    if (!limit.ok) {
+      return {
+        success: false,
+        error: { _form: ["Trop de requêtes, réessayez dans une minute."] },
+      };
+    }
+
     const inputData =
       formData instanceof FormData
         ? {
@@ -30,7 +38,6 @@ export async function updateItem(formData: FormData | UpdateItemInput) {
           }
         : formData;
 
-    // Validate with Zod
     const validatedData = UpdateItemSchema.safeParse(inputData);
 
     if (!validatedData.success) {
@@ -40,33 +47,28 @@ export async function updateItem(formData: FormData | UpdateItemInput) {
       };
     }
 
-    // Check if the item exists
-    const existingItem = await prisma.item.findUnique({
-      where: { id: validatedData.data.id },
-    });
-
-    if (!existingItem) {
-      return {
-        success: false,
-        error: { id: ["Item not found"] },
-      };
-    }
-
-    // Update the item in the database
-    const item = await prisma.item.update({
-      where: { id: validatedData.data.id },
+    const result = await prisma.item.updateMany({
+      where: {
+        id: validatedData.data.id,
+        listId: validatedData.data.listId,
+      },
       data: {
         title: validatedData.data.title,
         who: validatedData.data.who,
       },
     });
 
-    // Revalidate the list page to show the updated item
+    if (result.count === 0) {
+      return {
+        success: false,
+        error: { id: ["Item not found"] },
+      };
+    }
+
     revalidatePath(`/${validatedData.data.listId}`);
 
     return {
       success: true,
-      data: item,
     };
   } catch (error) {
     console.error("Failed to update item:", error);
