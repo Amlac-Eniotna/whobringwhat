@@ -34,6 +34,8 @@ export function ListTitle({ title }: ListTitleProps) {
     // Check if navigator.share exists AND is a function
     // Using try-catch to handle cases where some browsers might throw on property access
     try {
+      // Détection d'une capacité navigateur au montage (impossible au rendu SSR).
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setCanShare(
         typeof navigator !== "undefined" &&
           "share" in navigator &&
