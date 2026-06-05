@@ -1,6 +1,7 @@
 "use client";
 import { redirectList } from "@/actions/create-list";
 import { useToast } from "@/components/ui/use-toast";
+import { useOpenPanel } from "@openpanel/nextjs";
 import { Loader2, NotebookPen } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -10,12 +11,16 @@ export function StartButton() {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const { toast } = useToast();
+  const op = useOpenPanel();
 
   async function handleCreateList() {
     try {
       setIsLoading(true);
       const result = await redirectList();
       if (result.success && result.listId) {
+        // Tracking côté client : géo/session/navigateur corrects (IP du visiteur),
+        // contrairement à un track serveur qui géolocaliserait le datacenter.
+        op.track("list_created", { listId: result.listId });
         router.push(`/${result.listId}`);
       } else {
         toast({
