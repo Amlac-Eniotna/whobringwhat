@@ -1,26 +1,34 @@
 "use client";
 import { redirectList } from "@/actions/create-list";
 import { useToast } from "@/components/ui/use-toast";
-import { useOpenPanel } from "@openpanel/nextjs";
 import { Loader2, NotebookPen } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Button } from "../ui/button";
 
+// OpenPanel installe un Proxy sur window.op. On l'appelle directement plutôt que
+// via useOpenPanel().track : ce dernier fait `window.op?.(...)`, que le build de
+// prod minifie en `window.op.call(...)`. Or le Proxy ne fournit pas `.call`, d'où
+// le crash "t.call is not a function". L'appel direct passe par le trap apply.
+function trackEvent(name: string, properties?: Record<string, unknown>) {
+  if (typeof window === "undefined") return;
+  const op = (window as unknown as { op?: (...args: unknown[]) => void }).op;
+  if (typeof op === "function") op("track", name, properties);
+}
+
 export function StartButton() {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const { toast } = useToast();
-  const op = useOpenPanel();
 
   async function handleCreateList() {
     try {
       setIsLoading(true);
       const result = await redirectList();
       if (result.success && result.listId) {
-        // Tracking côté client : géo/session/navigateur corrects (IP du visiteur),
-        // contrairement à un track serveur qui géolocaliserait le datacenter.
-        op.track("list_created", { listId: result.listId });
+        // Tracking côté client : géo/session/navigateur du visiteur (et non du
+        // datacenter comme le ferait un track serveur).
+        trackEvent("list_created", { listId: result.listId });
         router.push(`/${result.listId}`);
       } else {
         toast({
