@@ -2,6 +2,7 @@
 "use server";
 
 import { Prisma } from "@/lib/generated/prisma";
+import { op } from "@/lib/op";
 import { prisma } from "@/lib/prisma";
 import { getClientIp, rateLimit } from "@/lib/rate-limit";
 import crypto from "crypto";
@@ -18,6 +19,14 @@ export async function redirectList() {
     }
 
     const list = await createList();
+
+    // Suivi analytics : l'analytics ne doit jamais casser la création de liste.
+    try {
+      await op.track("list_created", { listId: list.id });
+    } catch (trackError) {
+      console.error("OpenPanel track failed:", trackError);
+    }
+
     return { success: true, listId: list.id };
   } catch (error) {
     console.error("Failed to create list:", error);
