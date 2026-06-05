@@ -1,6 +1,7 @@
 "use client";
 import { deleteItem } from "@/actions/delete-item";
 import { updateItem } from "@/actions/update-item";
+import { trackEvent } from "@/lib/track";
 import { Check, Loader2, Pen, Trash2, X } from "lucide-react";
 import { useParams } from "next/navigation";
 import { useState } from "react";
@@ -51,6 +52,8 @@ export function Item({ item }: ListItemProps) {
         return;
       }
 
+      trackEvent("item_updated", { listId });
+
       setIsEditing(false);
       setIsSubmitting(false);
     } catch (error) {
@@ -75,6 +78,8 @@ export function Item({ item }: ListItemProps) {
         setIsDeleting(false);
         return;
       }
+
+      trackEvent("item_deleted", { listId });
 
       // The item will be removed from the UI automatically
       // when the page revalidates

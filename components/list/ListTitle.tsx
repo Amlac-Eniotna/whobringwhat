@@ -1,6 +1,7 @@
 "use client";
 import { updateListTitle } from "@/actions/update-list-title";
 import { useToast } from "@/components/ui/use-toast";
+import { trackEvent } from "@/lib/track";
 import { Check, Loader2, Pen, Share2, X } from "lucide-react";
 import { useParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
@@ -71,6 +72,8 @@ export function ListTitle({ title }: ListTitleProps) {
         setIsSubmitting(false);
         return;
       }
+
+      trackEvent("list_title_updated", { listId });
 
       setIsEditing(false);
       setIsSubmitting(false);
@@ -169,6 +172,8 @@ export function ListTitle({ title }: ListTitleProps) {
               url: url,
             });
 
+            trackEvent("list_shared", { listId, method: "web_share" });
+
             // Success message after share
             toast({
               title: "Shared successfully!",
@@ -203,6 +208,7 @@ export function ListTitle({ title }: ListTitleProps) {
       ) {
         try {
           await navigator.clipboard.writeText(url);
+          trackEvent("list_shared", { listId, method: "clipboard" });
           // Force React to complete any pending state updates
           setTimeout(() => {
             toast({
@@ -223,6 +229,7 @@ export function ListTitle({ title }: ListTitleProps) {
       const copySuccess = copyToClipboardFallback(url);
 
       if (copySuccess) {
+        trackEvent("list_shared", { listId, method: "manual" });
         // Force React to complete any pending state updates
         setTimeout(() => {
           toast({

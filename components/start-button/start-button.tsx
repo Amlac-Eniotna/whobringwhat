@@ -1,20 +1,11 @@
 "use client";
 import { redirectList } from "@/actions/create-list";
 import { useToast } from "@/components/ui/use-toast";
+import { trackEvent } from "@/lib/track";
 import { Loader2, NotebookPen } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Button } from "../ui/button";
-
-// OpenPanel installe un Proxy sur window.op. On l'appelle directement plutôt que
-// via useOpenPanel().track : ce dernier fait `window.op?.(...)`, que le build de
-// prod minifie en `window.op.call(...)`. Or le Proxy ne fournit pas `.call`, d'où
-// le crash "t.call is not a function". L'appel direct passe par le trap apply.
-function trackEvent(name: string, properties?: Record<string, unknown>) {
-  if (typeof window === "undefined") return;
-  const op = (window as unknown as { op?: (...args: unknown[]) => void }).op;
-  if (typeof op === "function") op("track", name, properties);
-}
 
 export function StartButton() {
   const [isLoading, setIsLoading] = useState(false);

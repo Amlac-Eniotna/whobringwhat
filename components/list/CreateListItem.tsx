@@ -1,5 +1,6 @@
 "use client";
 import { addItem } from "@/actions/add-item";
+import { trackEvent } from "@/lib/track";
 import { Check, Loader2, Plus, X } from "lucide-react";
 import { useParams } from "next/navigation";
 import { useState } from "react";
@@ -39,6 +40,8 @@ export function CreateListItem() {
         setIsSubmitting(false);
         return;
       }
+
+      trackEvent("item_added", { listId, has_who: Boolean(who) });
 
       // Reset form and close
       setTitle("");
