@@ -94,8 +94,9 @@ export default function RootLayout({
         className={`${nunitoSans.variable} ${nunito.variable} ${syne.variable} font-nunito-sans antialiased`}
       >
         <OpenPanelComponent
+          apiUrl="/api/op"
+          scriptUrl="/api/op/op1.js"
           clientId={process.env.NEXT_PUBLIC_CLIENT_ID!}
-          apiUrl={process.env.ANALYTICS_API_URL!}
           trackScreenViews={true}
           trackOutgoingLinks={true}
           trackAttributes={true}
