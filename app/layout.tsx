@@ -1,6 +1,7 @@
 import { ThemeProvider } from "@/components/theme/theme-provider";
 import { ModeToggle } from "@/components/theme/toggle-theme";
 import { Toaster } from "@/components/ui/toaster";
+import { OpenPanelComponent } from "@openpanel/nextjs";
 import type { Metadata } from "next";
 import { Nunito, Nunito_Sans, Syne } from "next/font/google";
 import Link from "next/link";
@@ -24,11 +25,22 @@ const syne = Syne({
 
 export const metadata: Metadata = {
   title: "QuiRamèneQuoi",
-  description: "L'application simple pour gérer les listes de courses et d'organisation pour vos soirées, week-ends et événements entre amis.",
+  description:
+    "L'application simple pour gérer les listes de courses et d'organisation pour vos soirées, week-ends et événements entre amis.",
   applicationName: "QuiRamèneQuoi",
   authors: [{ name: "Antoine Calma" }], // Presumed author from context, adjustable
-  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || "https://quiramenequoi.fr"),
-  keywords: ["soirée", "amis", "liste", "courses", "organisation", "événements", "partage"],
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_APP_URL || "https://quiramenequoi.fr",
+  ),
+  keywords: [
+    "soirée",
+    "amis",
+    "liste",
+    "courses",
+    "organisation",
+    "événements",
+    "partage",
+  ],
   alternates: {
     canonical: "./",
   },
@@ -51,7 +63,8 @@ export default function RootLayout({
               "@type": "Organization",
               name: "QuiRamèneQuoi",
               url: "https://quiramenequoi.fr",
-              description: "L'application simple pour gérer les listes de courses et d'organisation pour vos soirées, week-ends et événements entre amis.",
+              description:
+                "L'application simple pour gérer les listes de courses et d'organisation pour vos soirées, week-ends et événements entre amis.",
             }),
           }}
         />
@@ -66,7 +79,8 @@ export default function RootLayout({
               applicationCategory: "ProductivityApplication",
               operatingSystem: "Web",
               url: "https://quiramenequoi.fr",
-              description: "L'application simple pour gérer les listes de courses et d'organisation pour vos soirées, week-ends et événements entre amis.",
+              description:
+                "L'application simple pour gérer les listes de courses et d'organisation pour vos soirées, week-ends et événements entre amis.",
               offers: {
                 "@type": "Offer",
                 price: "0",
@@ -79,6 +93,13 @@ export default function RootLayout({
       <body
         className={`${nunitoSans.variable} ${nunito.variable} ${syne.variable} font-nunito-sans antialiased`}
       >
+        <OpenPanelComponent
+          clientId={process.env.NEXT_PUBLIC_CLIENT_ID!}
+          apiUrl={process.env.ANALYTICS_API_URL!}
+          trackScreenViews={true}
+          trackOutgoingLinks={true}
+          trackAttributes={true}
+        />
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
@@ -98,19 +119,34 @@ export default function RootLayout({
           {children}
           <footer className="m-auto mt-8 w-full max-w-3xl border-t border-gray-200 px-4 py-6 dark:border-gray-800">
             <nav className="flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm text-gray-500 dark:text-gray-400">
-              <Link href="/about" className="hover:text-gray-700 dark:hover:text-gray-300">
+              <Link
+                href="/about"
+                className="hover:text-gray-700 dark:hover:text-gray-300"
+              >
                 À propos
               </Link>
-              <Link href="/guide" className="hover:text-gray-700 dark:hover:text-gray-300">
+              <Link
+                href="/guide"
+                className="hover:text-gray-700 dark:hover:text-gray-300"
+              >
                 Guide
               </Link>
-              <Link href="/faq" className="hover:text-gray-700 dark:hover:text-gray-300">
+              <Link
+                href="/faq"
+                className="hover:text-gray-700 dark:hover:text-gray-300"
+              >
                 FAQ
               </Link>
-              <Link href="/privacy" className="hover:text-gray-700 dark:hover:text-gray-300">
+              <Link
+                href="/privacy"
+                className="hover:text-gray-700 dark:hover:text-gray-300"
+              >
                 Confidentialité
               </Link>
-              <Link href="/terms" className="hover:text-gray-700 dark:hover:text-gray-300">
+              <Link
+                href="/terms"
+                className="hover:text-gray-700 dark:hover:text-gray-300"
+              >
                 Conditions d{"'"}utilisation
               </Link>
             </nav>
