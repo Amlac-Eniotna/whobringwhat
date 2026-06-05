@@ -1,439 +1,179 @@
-# QuiRamèneQuoi - Comprehensive SEO Audit Report
-**Date:** April 3, 2026 | **URL:** https://quiramenequoi.fr | **Overall Health Score: 48/100**
+# Audit SEO complet — quiramenequoi.fr
+
+> Date de l'audit : 2026-05-30 · Méthode : crawl live + analyse du code source (Next.js 16 / App Router)
+> Type de site détecté : **Application web gratuite (SoftwareApplication / outil de productivité)** — pas de business local, pas d'e-commerce.
+> Audit précédent (2026-04-03) : 48/100 → **progression nette** (sécurité, redirections, OG images, pages de contenu désormais en place).
+
+## Score de santé SEO global : **72 / 100** 🟡
+
+| Catégorie | Poids | Score | Pondéré |
+|-----------|:----:|:----:|:------:|
+| Technical SEO | 22 % | 82 | 18,0 |
+| Content Quality | 23 % | 72 | 16,6 |
+| On-Page SEO | 20 % | 66 | 13,2 |
+| Schema / Données structurées | 10 % | 60 | 6,0 |
+| Performance (CWV) | 10 % | 80 | 8,0 |
+| AI Search Readiness | 10 % | 58 | 5,8 |
+| Images | 5 % | 85 | 4,3 |
+| **Total** | **100 %** | | **≈ 72** |
 
 ---
 
-## Executive Summary
+## Résumé exécutif
 
-QuiRamèneQuoi is a **technically solid but content-thin French event list-sharing application** with critical gaps in E-E-A-T, legal compliance, and AI search optimization. The application demonstrates excellent engineering (Next.js 15, Vercel, responsive design) but suffers from:
+QuiRamèneQuoi est un site techniquement sain et propre : HTTPS, redirections canoniques correctes, en-têtes de sécurité solides, contenu en français de bonne qualité sur les pages statiques. Les faiblesses se concentrent sur **trois leviers à fort impact et faible effort** : un sitemap incomplet, un `<title>` d'accueil non optimisé, et l'absence de schema FAQ. Le site est petit (6 pages indexables) — chaque optimisation compte.
 
-- **Critical:** Missing legal pages (Privacy Policy, Terms of Service) - GDPR violation
-- **Critical:** Zero schema.org markup (0 structured data blocks)
-- **Critical:** No unique metadata for 100+ dynamic list pages
-- **High:** Thin topical content (single homepage with no supporting pages)
-- **High:** Poor E-E-A-T signals (no author credentials, no testimonials, no authority)
-- **High:** AI search optimization failures (no llms.txt, poor citability)
+### Top 5 problèmes critiques / importants
+1. **Sitemap incomplet** — seule la home y figure ; les 5 pages de contenu (`/about`, `/guide`, `/faq`, `/privacy`, `/terms`) sont absentes. → [app/sitemap.ts](app/sitemap.ts)
+2. **Soft-404** — toute URL inexistante (ex. `/llms.txt`, `/nimportequoi`) renvoie **HTTP 200** au lieu de 404. → [app/[id]/page.tsx](app/[id]/page.tsx)
+3. **`<title>` d'accueil non optimisé** — « QuiRamèneQuoi » seul, sans mot-clé. Aucune cible sémantique (« qui ramène quoi », « liste apéro », « organiser soirée »). → [app/layout.tsx](app/layout.tsx)
+4. **Deux `<h1>` par page** — le wordmark du header global est un `<h1>`, qui s'ajoute au `<h1>` propre de chaque page. → [app/layout.tsx](app/layout.tsx#L90)
+5. **Schema FAQPage absent** — la page FAQ a un contenu Q/R idéal mais aucun balisage `FAQPage` (perte de rich results + citabilité IA). → [app/faq/page.tsx](app/faq/page.tsx)
 
-**Recovery Potential:** HIGH - With a 4-phase implementation plan, could reach 75+/100 within 12 weeks.
-
----
-
-## Category Breakdown
-
-### 1. AI Search Optimization (GEO) - Score: 42/100 🔴
-
-**Problem:** Site is discoverable but not citable.
-
-**Key Findings:**
-- ❌ No `/llms.txt` implementation (RSL 1.0 licensing missing)
-- ❌ Poor passage-level citability (content too fragmented)
-- ❌ Weak authority signals (founder unknown, no credentials)
-- ❌ Zero third-party validation or backlinks
-- ⚠️ Data disclosure problematic ("vente de données" without privacy policy)
-
-**Impact:**
-- ChatGPT citation likelihood: ~15%
-- Claude citation rate: ~10% 
-- Google AI Overview inclusion: Unlikely
-- Perplexity inclusion: Minimal
-
-**Quick Wins:**
-1. Create `/public/llms.txt` (1 hour)
-2. Reformat content for 134-167 word passages (3-4 hours)
-3. Create About page with founder bio (2 hours)
-4. Add FAQ structured schema (1 hour)
-
-**Estimated Impact:** +20 points (42 → 62/100)
+### Top 5 quick wins
+1. Ajouter les 5 pages au sitemap (5 lignes de code).
+2. Réécrire `metadata.title` de la home avec un template + un titre descriptif.
+3. Ajouter le JSON-LD `FAQPage` sur `/faq`.
+4. Transformer le wordmark du header en `<span>`/`<p>` (supprime le doublon de `h1`).
+5. Créer un vrai `/llms.txt` (route ou fichier `public/`).
 
 ---
 
-### 2. Content Quality & E-E-A-T - Score: 42/100 🔴
+## 1. Technical SEO — 82/100
 
-**Problem:** Thin, generic content with zero expertise signals.
+### Points forts ✅
+- **HTTPS + redirections** toutes en 308 et cohérentes :
+  - `http://` → `https://` ✅
+  - `www.` → apex (non-www) ✅
+  - trailing slash `/about/` → `/about` ✅
+- **En-têtes de sécurité** présents : `X-Frame-Options: DENY`, `X-Content-Type-Options: nosniff`, `Referrer-Policy: strict-origin-when-cross-origin`, `Permissions-Policy: camera=(), microphone=(), geolocation=()`.
+- **CSP** présente en mode `report-only` avec nonce + `strict-dynamic` (bonne hygiène, non bloquante pour le SEO).
+- **robots.txt** correct : `Allow: /`, `Disallow: /api/`, lien vers le sitemap. → [app/robots.ts](app/robots.ts)
+- **Canonicals** auto-référencés et corrects sur toutes les pages (sans trailing slash, cohérent avec les redirections).
+- **Rendu** : pages prérendues statiquement, servies par le CDN Vercel (`x-vercel-cache: HIT`), HTML léger (~36 Ko).
+- `noindex, nofollow` correctement appliqué sur les pages liste `/[id]` (évite le bloat d'index sur des URL privées). → [app/[id]/page.tsx](app/[id]/page.tsx#L9-L11)
 
-**Breakdown:**
-- **Experience:** 3/20 - No testimonials, case studies, or user stories
-- **Expertise:** 5/25 - Author unknown; zero educational content
-- **Authority:** 4/25 - Zero backlinks, press coverage, or endorsements
-- **Trustworthiness:** 3/10 - Missing privacy policy, problematic data language
-
-**Key Issues:**
-1. **Single-page website** - No supporting content pages
-   - Missing: /about, /faq, /guides, /blog, /privacy, /terms, /contact
-   
-2. **Thin content confirmed**
-   - Homepage: ~500 words (borderline)
-   - Supporting pages: 0
-   - Topic coverage: 5 vs. minimum 10-15 expected
-
-3. **E-E-A-T gaps**
-   - No author credentials on homepage
-   - No testimonials or social proof
-   - No press mentions or third-party validation
-   - Data monetization mentioned but not justified
-
-4. **Legal compliance failure**
-   - ❌ No Privacy Policy (GDPR violation for France)
-   - ❌ No Terms of Service
-   - ⚠️ Data "sale" disclosure without lawful basis (GDPR Article 6)
-
-**Recovery Plan:**
-- Phase 1: Privacy/Terms + About page (4 hours)
-- Phase 2: FAQ + Getting Started guide (6 hours)
-- Phase 3: Use case guides + Blog (12 hours)
-- Phase 4: Thought leadership + Press outreach (ongoing)
-
-**Estimated Impact:** +30 points (42 → 72/100)
+### Problèmes ⚠️
+| Sévérité | Problème | Détail |
+|----------|----------|--------|
+| **High** | Soft-404 | Le segment catch-all `/[id]` rend `<E404 />` mais renvoie **HTTP 200**. N'importe quelle URL invalide est donc un « 200 OK » trompeur. Mitigé par le `noindex`, mais Google peut signaler des soft-404 dans la Search Console. Correctif : appeler `notFound()` quand `list === null`. |
+| **Low** | HSTS incomplet | En-tête live : `strict-transport-security: max-age=63072000` — **sans** `includeSubDomains` ni `preload`. Le CLAUDE.md mentionne « HSTS preload » mais le site n'est pas éligible au préchargement en l'état (l'en-tête provient de Vercel, pas de `next.config.ts`). |
+| **Low** | CSP non appliquée | La CSP est en `report-only` uniquement : elle journalise sans bloquer. Sans impact SEO, mais à activer pour la sécurité réelle. |
 
 ---
 
-### 3. Technical SEO - Score: 72/100 🟡
+## 2. Content Quality — 72/100
 
-**Problem:** Solid foundation but dynamic pages not optimized.
+### E-E-A-T & profondeur
+- **Pages de contenu réelles et utiles** : `/about` (problème → solution → philosophie), `/guide` (pas-à-pas), `/faq` (Q/R claires). Ton naturel, français idiomatique, bien aligné avec l'intention « organiser qui ramène quoi ».
+- Home : section « À propos » riche (~**797 mots**), structure claire (Comment ça marche / Pourquoi / Cas d'usage / CTA).
 
-**Strengths:**
-- ✅ Security: 95/100 (HTTPS/HSTS, 2-year max-age)
-- ✅ URL Structure: 90/100 (clean, parameter-free)
-- ✅ Mobile: 85/100 (responsive, PWA manifest)
-- ✅ Crawlability: 85/100 (robots.txt correct)
-- ✅ Server-Side Rendering: Content fully accessible
-
-**Critical Issues:**
-
-1. **Dynamic pages have identical metadata**
-   - All `/[id]` pages share same title: "QuiRamèneQuoi"
-   - All use generic app description
-   - All have identical OG images
-   - **Solution:** Implement `generateMetadata()` in `app/[id]/page.tsx` (~30 lines)
-
-2. **Zero unique content signals**
-   - Google cannot differentiate between 100+ user lists
-   - No opportunity for list-specific search ranking
-
-3. **Thin sitemap**
-   - Only homepage included (acceptable for temporary content)
-   - Dynamic URLs excluded (acceptable trade-off)
-
-**Quick Fixes:**
-1. Dynamic metadata generation (2 hours)
-2. JSON-LD implementation (1 hour)
-3. Font optimization (30 minutes)
-4. Total effort: 3.5 hours
-
-**Estimated Impact:** +8 points (72 → 80/100)
+### Problèmes ⚠️
+| Sévérité | Problème | Détail |
+|----------|----------|--------|
+| **Medium** | Signaux E-E-A-T faibles | Pas de bio auteur, pas de page contact, pas de dates de publication/mise à jour. Le code contient même `authors: [{ name: "Antoine Calma" }] // Presumed author` → auteur incertain. → [app/layout.tsx](app/layout.tsx#L29) |
+| **Medium** | Couverture sémantique limitée | Aucun contenu ciblant les requêtes de longue traîne du créneau : « liste apéro à imprimer », « organiser un barbecue entre amis », « qui apporte quoi application », « répartir les courses soirée ». Un mini-blog / guides thématiques capterait du trafic informationnel. |
+| **Low** | Pas de maillage contextuel | Les pages ne se citent pas entre elles dans le corps de texte (uniquement via le footer). Ex. : `/guide` devrait lier `/faq`, la home devrait lier `/guide`. |
 
 ---
 
-### 4. Schema Markup - Score: 0/100 🔴
+## 3. On-Page SEO — 66/100
 
-**Problem:** Zero structured data implementation.
+### État des balises par page
+| Page | `<title>` | Meta description | Canonical | Verdict |
+|------|-----------|:----------------:|:---------:|---------|
+| `/` | `QuiRamèneQuoi` | ✅ (descriptive) | ✅ | ⚠️ titre non optimisé |
+| `/about` | `À propos \| QuiRamèneQuoi` | ✅ | ✅ | ✅ |
+| `/guide` | `Guide de démarrage \| QuiRamèneQuoi` | ✅ | ✅ | ✅ |
+| `/faq` | `FAQ - Questions fréquentes \| QuiRamèneQuoi` | ✅ | ✅ | ✅ |
+| `/privacy` | `Politique de Confidentialité - QuiRamèneQuoi` | ✅ | ✅ | ✅ |
+| `/terms` | `Conditions d'Utilisation - QuiRamèneQuoi` | ✅ | ✅ | ✅ |
 
-**Current State:**
-- JSON-LD blocks: 0
-- Microdata: None
-- RDFa: None
-- Schema.org types implemented: 0
+### Problèmes ⚠️
+| Sévérité | Problème | Détail |
+|----------|----------|--------|
+| **High** | Titre d'accueil pauvre | `<title>QuiRamèneQuoi</title>` ne contient aucun mot-clé. C'est la page la plus importante du site. Cible suggérée : `QuiRamèneQuoi — Qui ramène quoi ? Listes partagées pour soirées & événements`. |
+| **High** | Doublon de `<h1>` | Chaque page rend **deux `<h1>`** : le wordmark global du header (`<h1>QuiRamèneQuoi</h1>`, [app/layout.tsx](app/layout.tsx#L90)) **+** le `<h1>` propre de la page. Sur la home, deux `<h1>` cohabitent (wordmark + « L'art de l'organisation partagée »). À garder : 1 `<h1>` par page. |
+| **Medium** | H1 d'accueil sous la ligne de flottaison | Le seul `<h1>` descriptif (« QuiRamèneQuoi - L'art de l'organisation partagée ») est dans la section `About`, après le scroll. Au-dessus de la ligne de flottaison : juste un bouton + un disclaimer. |
+| **Low** | Cohérence des séparateurs de titre | Mélange ` \| ` et ` - ` entre les pages (`À propos | …` vs `Politique de Confidentialité - …`). Cosmétique. |
 
-**Rich Snippet Opportunities Lost:**
-- ❌ No Apps Rich Results (SoftwareApplication missing)
-- ❌ No Knowledge Panel eligibility (Organization missing)
-- ❌ No Sitelinks in search (WebSite missing)
-- ❌ No breadcrumb navigation in search
-
-**Missing Schemas (Priority Order):**
-
-1. **SoftwareApplication** (CRITICAL)
-   ```json
-   {
-     "@context": "https://schema.org",
-     "@type": "SoftwareApplication",
-     "name": "QuiRamèneQuoi",
-     "applicationCategory": "ProductivityApplication",
-     "operatingSystem": "Web"
-   }
-   ```
-   - Effort: 30 minutes
-   - Impact: Enables Apps Rich Results
-
-2. **Organization** (HIGH)
-   - Effort: 15 minutes
-   - Impact: Knowledge Graph eligibility
-
-3. **WebSite** (HIGH)
-   - Effort: 10 minutes
-   - Impact: Sitelinks in SERPs
-
-4. **ItemList** (dynamic pages) (MEDIUM)
-   - Effort: 20 minutes
-   - Impact: Breadcrumbs in search
-
-**Total Effort:** 2-3 hours for complete implementation
-
-**Expected Outcomes:**
-- Breadcrumbs visibility: 1-2 months
-- Apps Rich Results: 3-6 months
-- CTR improvement: +2-5%
+### Points forts ✅
+- Open Graph **complet** : `og:title`, `og:description`, `og:image` (1200×630, type/dimensions/alt déclarés).
+- Twitter Card `summary_large_image` complète.
+- `lang="fr"` correct, viewport présent, meta description sur **toutes** les pages.
 
 ---
 
-### 5. Performance & Core Web Vitals - Score: 95/100 🟢
+## 4. Schema / Données structurées — 60/100
 
-**Status:** Excellent with minor optimization opportunities.
+### Implémenté ✅
+- `Organization` (JSON-LD) — global. → [app/layout.tsx](app/layout.tsx#L45-L57)
+- `SoftwareApplication` (JSON-LD) avec `offers` price 0 EUR — global, **valide**. → [app/layout.tsx](app/layout.tsx#L58-L77)
+- 2 blocs JSON-LD confirmés sur le HTML rendu, sans erreur de syntaxe.
 
-**Core Web Vitals:**
-- ✅ **INP:** ~8ms (excellent, target ≤200ms)
-- ✅ **CLS:** 0.0 (perfect, target ≤0.1)
-- ⚠️ **LCP:** 2.8s mobile / 2.9s desktop (needs improvement, target ≤2.5s)
-
-**Key Metrics:**
-- Lighthouse Score: 95/100
-- First Contentful Paint: 1.1s ✅
-- Speed Index: 1.7s ✅
-- Time to First Byte: 20ms ✅
-
-**Issues:**
-
-1. **LCP Element Render Delay: 1,098ms** 🔴
-   - H1 tag takes 1+ second to render
-   - Root causes: Font loading (FOIT) + CSS parsing + JS hydration
-   - **Impact:** This is 44% of total LCP delay
-   - **Solution:** Font optimization + critical CSS inlining
-
-2. **54 KiB Unused JavaScript** 🟡
-   - Chunk 1: 74.5% unused (29.1 KiB wasted)
-   - Chunk 2: 36.6% unused (25.2 KiB wasted)
-   - Likely: Radix UI components bundled globally but only used on `/[id]`
-   - **Solution:** Code-split via dynamic imports
-
-3. **Font Loading (105 KiB - 32% of payload)** 🟡
-   - Three fonts preloaded unnecessarily
-   - Blocking text rendering
-   - **Solution:** Font subsetting, variable fonts, or font-display: swap
-
-**Optimization Roadmap:**
-
-| Week | Priority | Action | Expected Gain |
-|------|----------|--------|---|
-| 1 | High | Inline critical CSS + monitor CrUX | -150ms LCP |
-| 2 | High | Remove unused JS (code-splitting) | -470ms LCP |
-| 3 | High | Optimize fonts + diagnose render delay | -600-1,000ms LCP |
-
-**Total Potential:** LCP 2.8s → 1.2-1.6s (54-57% improvement)
-
-**Files to Modify:**
-- `/app/layout.tsx` - Fonts, critical CSS
-- `/app/page.tsx` - Component imports
-- `/next.config.ts` - Bundle optimization
+### Opportunités manquées ⚠️
+| Sévérité | Opportunité | Page |
+|----------|-------------|------|
+| **High** | `FAQPage` | La page `/faq` a un tableau `faqs[]` parfaitement structuré mais aucun balisage. Gros gain rich results + citabilité IA. → [app/faq/page.tsx](app/faq/page.tsx) |
+| **Medium** | `HowTo` | `/guide` est un pas-à-pas numéroté (étapes 1-2-3) : candidat idéal au schema `HowTo`. → [app/guide/page.tsx](app/guide/page.tsx) |
+| **Low** | `BreadcrumbList` | Aucun fil d'Ariane structuré sur les pages internes. |
+| **Low** | `WebSite` | Optionnel (peu utile sans recherche interne). |
 
 ---
 
-### 6. Visual & Mobile - Score: 7.5/10 🟢
+## 5. Performance (Core Web Vitals) — 80/100
 
-**Status:** Responsive and accessible with good UX baseline.
+> ⚠️ Pas de données terrain (CrUX/field) disponibles dans cet audit — estimation basée sur l'architecture.
 
-**Strengths:**
-- ✅ Fully responsive (0-1920px range)
-- ✅ Excellent color contrast (WCAG AAA: 18:1 light, 15:1 dark)
-- ✅ Mobile-friendly viewport configuration
-- ✅ No oversized images (text-only design = fast)
-- ✅ Dark mode with system preference detection
-- ✅ Clean semantic HTML structure
+### Points forts ✅
+- Pages **statiques prérendues** + CDN Vercel (`HIT`). HTML 36 Ko.
+- **Polices préchargées** (`rel=preload` woff2 pour Nunito / Nunito Sans / Syne, self-hosted via `next/font`).
+- `optimizePackageImports: ["lucide-react", "date-fns"]` → tree-shaking des icônes. → [next.config.ts](next.config.ts#L16)
+- `output: "standalone"`.
+- **Aucune image bitmap** sur la home (icônes en SVG inline) → LCP léger.
 
-**Issues (by priority):**
-
-| Priority | Issue | Viewport | Fix Time |
-|----------|-------|----------|----------|
-| HIGH | Limited hero content | All | 10 min |
-| MEDIUM | Duplicate H1 tags | All | 2 min |
-| MEDIUM | Touch targets < 48px | Mobile | 10-15 min |
-| LOW | Missing aria-labels | All | 5 min |
-| LOW | Sparse visual content | All | 45-60 min |
-
-**Scoring Breakdown:**
-- Functionality & Responsiveness: 9/10
-- Accessibility: 8/10
-- Visual Design: 7/10
-- User Experience: 6.5/10
-- Performance: 9/10
+### À surveiller ⚠️
+| Sévérité | Point | Détail |
+|----------|-------|--------|
+| **Low** | Animation de fond | `<div id="bg-animate">` (animation plein écran) — vérifier l'impact sur INP/CLS et la consommation CPU mobile. → [app/page.tsx](app/page.tsx#L9) |
+| **Low** | 3 familles de polices | Nunito + Nunito Sans + Syne. Envisager de réduire à 2 si l'usage de l'une est marginal. |
+| **Info** | Pas de field data | Brancher CrUX / Search Console pour mesurer LCP, INP, CLS réels. |
 
 ---
 
-## Top 5 Critical Actions
+## 6. Images — 85/100
 
-### Action 1: Legal Compliance (URGENT - 24 hours)
-**Effort:** 3-4 hours  
-**Priority:** CRITICAL  
-**Risk:** GDPR violation, user distrust
+### Points forts ✅
+- **Aucune image de contenu sans alt** (le site n'utilise pas de `<img>` en contenu — tout est texte + SVG).
+- `og:image` générée dynamiquement (1200×630, PNG ~25 Ko) avec `alt` déclaré (« QuiRamèneQuoi - Organisez vos soirées »). → [app/opengraph-image.tsx](app/opengraph-image.tsx)
+- Favicon, icône PWA et apple-icon générées.
 
-**Tasks:**
-1. Draft Privacy Policy (French + English)
-   - Data retention: 2 years (per current disclosure)
-   - Lawful basis: Article 6 (legitimate interest) or 7 (consent)
-   - Remove or justify "data sale" clause
-   
-2. Draft Terms of Service
-   - User rights and responsibilities
-   - Liability limitations
-   - Account/list deletion policies
-   
-3. Update homepage disclosure
-   - Replace: "vous consentez au stockage et à la vente de vos données"
-   - Better: "Nous utilisons vos données pour améliorer le service [with transparency statement]"
-
-4. Create footer links
-   - /privacy | /terms | /contact
-
-**Files to Create:**
-- `app/privacy/page.tsx`
-- `app/terms/page.tsx`
-- `app/contact/page.tsx`
+### Points d'attention ⚠️
+| Sévérité | Point | Détail |
+|----------|-------|--------|
+| **Low** | Tailles d'icônes du manifest | Le manifest déclare `/icon.png` en **192×192 ET 512×512** alors que c'est le même fichier — vérifier que le fichier source fait bien 512px (sinon le 192 ou le 512 est faux). → [app/manifest.ts](app/manifest.ts#L18-L27) |
+| **Low** | OG image — polices runtime | `opengraph-image.tsx` fetch les polices Google **au runtime** ; un échec réseau côté edge casserait l'image sociale. Mise en cache OK, mais fragile. |
 
 ---
 
-### Action 2: Dynamic Metadata + Schema (3-4 hours)
-**Priority:** HIGH  
-**Impact:** +15 SEO points  
-**Timeline:** Week 1
+## 7. AI Search Readiness (GEO) — 58/100
 
-**Tasks:**
+### Points forts ✅
+- **Crawlers IA autorisés** : `User-Agent: *` / `Allow: /` n'exclut ni GPTBot, ni ClaudeBot, ni PerplexityBot.
+- Contenu FAQ en **Q/R concises** → format idéal pour la citation par les moteurs génératifs.
+- HTML sémantique, contenu rendu côté serveur (accessible sans JS).
 
-1. Implement `generateMetadata()` in `app/[id]/page.tsx`
-   ```typescript
-   export async function generateMetadata({ params }) {
-     const list = await getList(params.id);
-     return {
-       title: `${list.title} - QuiRamèneQuoi`,
-       description: `${list.title}: ${list.items.map(i => i.title).join(', ')}`,
-       openGraph: {
-         title: `${list.title} - QuiRamèneQuoi`,
-         description: `${list.items.map(i => i.title).join(', ')}`
-       }
-     };
-   }
-   ```
-
-2. Add JSON-LD schemas to `app/layout.tsx`
-   - SoftwareApplication
-   - Organization
-   - WebSite
-   - (ItemList in dynamic pages)
-
-3. Add `generateMetadata()` to homepage to match
-
-4. Test with Google Rich Results Test Tool
-
-**Files to Modify:**
-- `app/layout.tsx`
-- `app/[id]/page.tsx`
-- `app/page.tsx`
+### Problèmes ⚠️
+| Sévérité | Problème | Détail |
+|----------|----------|--------|
+| **Medium** | Pas de `llms.txt` | `/llms.txt` renvoie 200 mais c'est le **soft-404** (HTML de la route `/[id]`), pas un vrai fichier. Créer un vrai `/llms.txt` listant les pages clés. |
+| **Medium** | Pas de `FAQPage` schema | Réduit la probabilité de citation passage-level (voir §4). |
+| **Medium** | Faible signal de marque | « QuiRamèneQuoi » a peu de mentions off-site / backlinks → autorité faible pour les LLM. Levier : annuaires d'outils gratuits, Product Hunt, articles « apps pour organiser une soirée ». |
 
 ---
 
-### Action 3: About Page + Authority Building (2-3 hours)
-**Priority:** HIGH  
-**Impact:** +12 E-E-A-T points  
-**Timeline:** Week 1-2
-
-**Create:** `app/about/page.tsx` (500-800 words)
-
-**Content:**
-- Author bio: Antoine Calma (background, credentials, why you built this)
-- Project motivation/origin story
-- Vision statement
-- How it works (deeper dive)
-- Contact information
-- Links to social profiles (if applicable)
-
-**Impact:**
-- Establishes author credentials
-- Builds trust signals
-- Improves E-E-A-T perception
-
----
-
-### Action 4: FAQ + Getting Started (4-5 hours)
-**Priority:** HIGH  
-**Impact:** +8 points  
-**Timeline:** Week 2-3
-
-**Create:**
-1. `app/faq/page.tsx` (1,200-1,500 words, 10-15 Q&A pairs)
-2. `app/guide/page.tsx` (1,500-2,000 words, step-by-step tutorial)
-
-**FAQ Questions to Answer:**
-- How do I create and share a list?
-- Can I edit items after sharing?
-- What happens if I delete a list?
-- Is my data private and secure?
-- Does it work without login?
-- How long are lists stored?
-- Can I undo changes?
-- How many items can I add?
-- What if someone removes an item I added?
-- Is there a mobile app?
-
----
-
-### Action 5: Performance Optimization (6-8 hours)
-**Priority:** MEDIUM (after content)  
-**Impact:** -600ms LCP (21% improvement)  
-**Timeline:** Month 2
-
-**Tasks:**
-1. Remove 54 KiB unused JavaScript (code-splitting): -470ms
-2. Optimize fonts (subsetting, swap, variable): -100-200ms
-3. Inline critical CSS: -150ms
-4. Diagnose element render delay: -500ms to -1,098ms potential
-
-**Files to Modify:**
-- `/app/layout.tsx`
-- `/next.config.ts`
-- Component imports across codebase
-
----
-
-## 12-Month Recovery Plan
-
-| Phase | Timeline | Actions | Target Score |
-|-------|----------|---------|---|
-| **Phase 1: Emergency** | Week 1 | Privacy/Terms, dynamic metadata, schema | 55/100 |
-| **Phase 2: Core** | Week 2-3 | About page, FAQ, getting started, guides | 65/100 |
-| **Phase 3: Content** | Month 2 | Blog, use cases, testimonials, thought leadership | 72/100 |
-| **Phase 4: Polish** | Month 3 | Performance optimization, monitoring, refinement | 78/100 |
-
----
-
-## Monitoring & Next Steps
-
-### Weekly Checklist
-- [ ] Monitor Google Search Console for indexation
-- [ ] Check Google PageSpeed Insights for CWV updates
-- [ ] Review server logs for crawl patterns
-- [ ] Update analytics dashboard
-
-### Monthly Checklist
-- [ ] Review content performance in GSC
-- [ ] Check ranking improvements for target keywords
-- [ ] Monitor backlink profile (e.g., Ahrefs, SEMrush free trials)
-- [ ] Update blog content calendar
-- [ ] Respond to user inquiries/feedback
-
-### Quarterly Checklist
-- [ ] Run full SEO audit (comparison)
-- [ ] Review competitor content strategy
-- [ ] Plan next content initiatives
-- [ ] Assessment of E-E-A-T signals
-
----
-
-## Key Files to Review
-
-All analysis reports have been generated:
-1. This file: `/FULL-AUDIT-REPORT.md`
-2. Action plan: `/ACTION-PLAN.md` (next)
-3. Screenshots: `/screenshots/` (4 viewports)
-
----
-
-**Report Generated:** April 3, 2026  
-**Next Review:** June 3, 2026 (12-week checkpoint)
+## Annexe — Méthodologie & couverture du crawl
+- **Pages indexables découvertes : 6** (`/`, `/about`, `/guide`, `/faq`, `/privacy`, `/terms`). Site sous le plafond de 500 pages → crawl exhaustif.
+- **Pages non indexables (volontaire) :** `/[id]` (listes utilisateur, `noindex,nofollow`), `/api/*` (bloqué robots).
+- Données croisées entre le rendu HTTP live et le code source du dépôt (`app/`, `next.config.ts`, `actions/`).
+- Limites : pas de données de champ CWV (CrUX/GSC), pas de profil de backlinks (aucun outil tiers connecté).
