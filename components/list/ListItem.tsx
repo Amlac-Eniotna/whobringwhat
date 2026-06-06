@@ -102,9 +102,9 @@ export function Item({ item }: ListItemProps) {
   if (!isEditing) {
     return (
       <li className="mb-1 flex items-center justify-between gap-2">
-        <div className="flex w-full items-center justify-between gap-2 divide-x border-b">
-          <p className="flex w-full items-center px-3">{item.food}</p>
-          <p className="flex w-full max-w-20 items-center px-3 md:max-w-24">
+        <div className="flex w-full items-center justify-between gap-2 divide-x border-b leading-tight">
+          <p className="flex w-full items-center px-3 py-1">{item.food}</p>
+          <p className="flex w-full max-w-20 items-center px-3 py-1 md:max-w-24">
             {item.who}
           </p>
         </div>
