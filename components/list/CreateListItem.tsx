@@ -1,11 +1,11 @@
 "use client";
 import { addItem } from "@/actions/add-item";
+import { CharCounter } from "@/components/ui/char-counter";
 import { trackEvent } from "@/lib/track";
 import { Check, Loader2, Plus, X } from "lucide-react";
 import { useParams } from "next/navigation";
 import { useState } from "react";
 import { Button } from "../ui/button";
-import { CharCounter } from "@/components/ui/char-counter";
 
 // Define proper types for the error structure
 type FieldErrors = {
@@ -87,10 +87,14 @@ export function CreateListItem() {
             onChange={(e) => setTitle(e.target.value)}
             disabled={isSubmitting}
           />
-          <CharCounter value={title} max={100} />
-          {errors.title && (
-            <p className="text-destructive mt-1 text-xs">{errors.title[0]}</p>
-          )}
+          <div className="flex w-full items-center justify-between">
+            {errors.title && (
+              <p className="text-destructive mt-1 text-xs whitespace-nowrap">
+                {errors.title[0]}
+              </p>
+            )}
+            <CharCounter value={title} max={100} />
+          </div>
         </div>
         <div className="flex w-full max-w-24 flex-col">
           <input
@@ -101,10 +105,14 @@ export function CreateListItem() {
             onChange={(e) => setWho(e.target.value)}
             disabled={isSubmitting}
           />
-          <CharCounter value={who} max={50} />
-          {errors.who && (
-            <p className="text-destructive mt-1 text-xs">{errors.who[0]}</p>
-          )}
+          <div className="flex w-full items-center justify-between">
+            {errors.who && (
+              <p className="text-destructive mt-1 text-xs whitespace-nowrap">
+                {errors.who[0]}
+              </p>
+            )}
+            <CharCounter value={who} max={50} />
+          </div>
         </div>
       </div>
 

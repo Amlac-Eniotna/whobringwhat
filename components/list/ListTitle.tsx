@@ -268,8 +268,8 @@ export function ListTitle({ title }: ListTitleProps) {
     return (
       <div className="flex w-full items-center justify-between">
         <div className="flex w-full items-center justify-between gap-2">
-          <h1 
-            className="m-auto w-full text-center text-xl text-black dark:text-white cursor-pointer hover:opacity-80 transition-opacity"
+          <h1
+            className="m-auto w-full cursor-pointer text-center text-xl text-black transition-opacity hover:opacity-80 dark:text-white"
             onClick={() => setIsEditing(true)}
             title="Cliquer pour modifier"
           >
@@ -308,7 +308,7 @@ export function ListTitle({ title }: ListTitleProps) {
           ref={inputRef}
           type="text"
           placeholder="Titre de la liste"
-          className="text-center text-foreground focus:border-primary focus:ring-primary h-9 w-full rounded-md border bg-transparent p-2 text-lg font-medium backdrop-blur-xs outline-none focus:ring-1"
+          className="text-foreground focus:border-primary focus:ring-primary h-9 w-full rounded-md border bg-transparent p-2 text-center text-lg font-medium backdrop-blur-xs outline-none focus:ring-1"
           value={titleText}
           onChange={(e) => setTitleText(e.target.value)}
           onBlur={handleBlur}
@@ -323,10 +323,14 @@ export function ListTitle({ title }: ListTitleProps) {
           }}
           disabled={isSubmitting}
         />
-        <CharCounter value={titleText} max={100} />
-        {errors.title && (
-          <p className="text-destructive mt-1 text-xs">{errors.title[0]}</p>
-        )}
+        <div className="flex w-full items-center justify-between">
+          {errors.title && (
+            <p className="text-destructive mt-1 text-xs whitespace-nowrap">
+              {errors.title[0]}
+            </p>
+          )}
+          <CharCounter value={titleText} max={100} />
+        </div>
       </div>
 
       {errors._form && (

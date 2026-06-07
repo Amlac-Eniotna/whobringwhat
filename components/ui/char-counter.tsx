@@ -14,7 +14,7 @@ export function CharCounter({ value, max, className }: CharCounterProps) {
     <span
       aria-live="polite"
       className={cn(
-        "mt-0.5 block text-right text-xs tabular-nums",
+        "mt-0.5 block w-full text-right text-xs tabular-nums",
         isOver ? "text-destructive" : "text-muted-foreground",
         className,
       )}
