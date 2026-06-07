@@ -5,21 +5,37 @@ import { ListTitle } from "@/components/list/ListTitle";
 import { StartButton } from "@/components/start-button/start-button";
 import { prisma } from "@/lib/prisma";
 import { Metadata } from "next";
+import { cache } from "react";
 
-export const metadata: Metadata = {
-  robots: "noindex, nofollow",
-};
-
-const Page = async ({ params }: { params: Promise<{ id: string }> }) => {
-  const id = (await params).id;
-  const list = await prisma.list.findUnique({
+const getList = cache((id: string) =>
+  prisma.list.findUnique({
     where: { id },
     select: {
       id: true,
       title: true,
       item: true, // Include the items from the database
     },
-  });
+  }),
+);
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}): Promise<Metadata> {
+  const { id } = await params;
+  const list = await getList(id);
+  return {
+    title: list
+      ? `${list.title} · QuiRamèneQuoi`
+      : "Liste introuvable · QuiRamèneQuoi",
+    robots: "noindex, nofollow",
+  };
+}
+
+const Page = async ({ params }: { params: Promise<{ id: string }> }) => {
+  const id = (await params).id;
+  const list = await getList(id);
   return (
     <main className="m-auto flex min-h-[calc(100vh-68px)] w-full max-w-3xl flex-col items-center justify-center gap-8 p-4">
       {list ? <List data={list} /> : <E404 />}
