@@ -5,6 +5,7 @@ import { Check, Loader2, Plus, X } from "lucide-react";
 import { useParams } from "next/navigation";
 import { useState } from "react";
 import { Button } from "../ui/button";
+import { CharCounter } from "@/components/ui/char-counter";
 
 // Define proper types for the error structure
 type FieldErrors = {
@@ -77,28 +78,34 @@ export function CreateListItem() {
   return (
     <div className="flex w-full gap-2">
       <div className="flex w-full gap-2">
-        <input
-          type="text"
-          placeholder="Nom de l'article"
-          className="text-foreground focus:border-primary focus:ring-primary h-9 w-full rounded-md border bg-transparent p-2 backdrop-blur-xs outline-none focus:ring-1"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          disabled={isSubmitting}
-        />
-        {errors.title && (
-          <p className="text-destructive mt-1 text-xs">{errors.title[0]}</p>
-        )}
-        <input
-          type="text"
-          placeholder="Prénom (facultatif)"
-          className="text-foreground focus:border-primary focus:ring-primary h-9 w-full max-w-24 rounded-md border bg-transparent p-2 backdrop-blur-xs outline-none focus:ring-1"
-          value={who}
-          onChange={(e) => setWho(e.target.value)}
-          disabled={isSubmitting}
-        />
-        {errors.who && (
-          <p className="text-destructive mt-1 text-xs">{errors.who[0]}</p>
-        )}
+        <div className="flex w-full flex-col">
+          <input
+            type="text"
+            placeholder="Nom de l'article"
+            className="text-foreground focus:border-primary focus:ring-primary h-9 w-full rounded-md border bg-transparent p-2 backdrop-blur-xs outline-none focus:ring-1"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            disabled={isSubmitting}
+          />
+          <CharCounter value={title} max={100} />
+          {errors.title && (
+            <p className="text-destructive mt-1 text-xs">{errors.title[0]}</p>
+          )}
+        </div>
+        <div className="flex w-full max-w-24 flex-col">
+          <input
+            type="text"
+            placeholder="Prénom (facultatif)"
+            className="text-foreground focus:border-primary focus:ring-primary h-9 w-full rounded-md border bg-transparent p-2 backdrop-blur-xs outline-none focus:ring-1"
+            value={who}
+            onChange={(e) => setWho(e.target.value)}
+            disabled={isSubmitting}
+          />
+          <CharCounter value={who} max={50} />
+          {errors.who && (
+            <p className="text-destructive mt-1 text-xs">{errors.who[0]}</p>
+          )}
+        </div>
       </div>
 
       {errors._form && (
