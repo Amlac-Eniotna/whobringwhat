@@ -1,5 +1,6 @@
 "use client";
 import { updateListTitle } from "@/actions/update-list-title";
+import { CharCounter } from "@/components/ui/char-counter";
 import { useToast } from "@/components/ui/use-toast";
 import { trackEvent } from "@/lib/track";
 import { Check, Loader2, Pen, Share2, X } from "lucide-react";
@@ -322,6 +323,7 @@ export function ListTitle({ title }: ListTitleProps) {
           }}
           disabled={isSubmitting}
         />
+        <CharCounter value={titleText} max={100} />
         {errors.title && (
           <p className="text-destructive mt-1 text-xs">{errors.title[0]}</p>
         )}
