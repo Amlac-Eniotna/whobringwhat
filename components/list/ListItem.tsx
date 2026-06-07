@@ -1,6 +1,7 @@
 "use client";
 import { deleteItem } from "@/actions/delete-item";
 import { updateItem } from "@/actions/update-item";
+import { CharCounter } from "@/components/ui/char-counter";
 import { trackEvent } from "@/lib/track";
 import { Check, Loader2, Pen, Trash2, X } from "lucide-react";
 import { useParams } from "next/navigation";
@@ -137,28 +138,42 @@ export function Item({ item }: ListItemProps) {
     <li className="mb-3">
       <div className="flex w-full gap-2">
         <div className="flex w-full gap-2">
-          <input
-            type="text"
-            placeholder="Article"
-            className="text-foreground focus:border-primary focus:ring-primary h-9 w-full rounded-md border bg-transparent px-3 backdrop-blur-xs outline-none focus:ring-1"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            disabled={isSubmitting}
-          />
-          {errors.title && (
-            <p className="text-destructive mt-1 text-xs">{errors.title[0]}</p>
-          )}
-          <input
-            type="text"
-            placeholder="Prénom (facultatif)"
-            className="text-foreground focus:border-primary focus:ring-primary h-9 w-full max-w-24 rounded-md border bg-transparent px-3 backdrop-blur-xs outline-none focus:ring-1"
-            value={who}
-            onChange={(e) => setWho(e.target.value)}
-            disabled={isSubmitting}
-          />
-          {errors.who && (
-            <p className="text-destructive mt-1 text-xs">{errors.who[0]}</p>
-          )}
+          <div className="flex w-full flex-col">
+            <input
+              type="text"
+              placeholder="Article"
+              className="text-foreground focus:border-primary focus:ring-primary h-9 w-full rounded-md border bg-transparent px-3 backdrop-blur-xs outline-none focus:ring-1"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              disabled={isSubmitting}
+            />
+            <div className="flex w-full items-center justify-between">
+              {errors.title && (
+                <p className="text-destructive mt-1 text-xs whitespace-nowrap">
+                  {errors.title[0]}
+                </p>
+              )}
+              <CharCounter value={title} max={100} />
+            </div>
+          </div>
+          <div className="flex w-full max-w-24 flex-col">
+            <input
+              type="text"
+              placeholder="Prénom (facultatif)"
+              className="text-foreground focus:border-primary focus:ring-primary h-9 w-full rounded-md border bg-transparent px-3 backdrop-blur-xs outline-none focus:ring-1"
+              value={who}
+              onChange={(e) => setWho(e.target.value)}
+              disabled={isSubmitting}
+            />
+            <div className="flex w-full items-center justify-between">
+              {errors.who && (
+                <p className="text-destructive mt-1 text-xs whitespace-nowrap">
+                  {errors.who[0]}
+                </p>
+              )}
+              <CharCounter value={who} max={50} />
+            </div>
+          </div>
         </div>
 
         {errors._form && (
