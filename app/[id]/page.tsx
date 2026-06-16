@@ -1,10 +1,10 @@
-import Link from "next/link";
 import { CreateListItem } from "@/components/list/CreateListItem";
 import { Item } from "@/components/list/ListItem";
 import { ListTitle } from "@/components/list/ListTitle";
 import { StartButton } from "@/components/start-button/start-button";
 import { prisma } from "@/lib/prisma";
 import { Metadata } from "next";
+import Link from "next/link";
 import { cache } from "react";
 
 const getList = cache((id: string) =>
@@ -49,11 +49,17 @@ const E404 = () => {
       <StartButton />
       <p className="max-w-lg text-sm text-pretty text-gray-500 dark:text-gray-600">
         En cliquant sur «Créer une liste», vous acceptez nos{" "}
-        <Link href="/terms" className="underline hover:text-gray-700 dark:hover:text-gray-500">
+        <Link
+          href="/terms"
+          className="underline hover:text-gray-700 dark:hover:text-gray-500"
+        >
           conditions d{"'"}utilisation
-        </Link>
-        {" "}et notre{" "}
-        <Link href="/privacy" className="underline hover:text-gray-700 dark:hover:text-gray-500">
+        </Link>{" "}
+        et notre{" "}
+        <Link
+          href="/privacy"
+          className="underline hover:text-gray-700 dark:hover:text-gray-500"
+        >
           politique de confidentialité
         </Link>
         . Vos données sont stockées de manière anonyme pendant 2 ans.

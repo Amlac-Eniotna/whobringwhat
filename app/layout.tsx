@@ -1,3 +1,4 @@
+import { AdSense } from "@/components/ads/adsense";
 import { ThemeProvider } from "@/components/theme/theme-provider";
 import { ModeToggle } from "@/components/theme/toggle-theme";
 import { Toaster } from "@/components/ui/toaster";
@@ -119,7 +120,8 @@ export default function RootLayout({
           </header>
           {children}
           <footer className="m-auto mt-8 w-full max-w-3xl border-t border-gray-200 px-4 py-6 dark:border-gray-800">
-            <nav className="flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm text-gray-500 dark:text-gray-400">
+            <AdSense />
+            <nav className="mt-6 flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm text-gray-500 dark:text-gray-400">
               <Link
                 href="/about"
                 className="hover:text-gray-700 dark:hover:text-gray-300"
