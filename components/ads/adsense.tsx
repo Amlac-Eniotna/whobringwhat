@@ -21,7 +21,7 @@ export function AdSense() {
   }, []);
 
   return (
-    <div className="w-full">
+    <div className="w-full text-center">
       <Script
         id="adsbygoogle-init"
         src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${AD_CLIENT}`}
@@ -31,11 +31,9 @@ export function AdSense() {
       {/* quiramenequoi */}
       <ins
         className="adsbygoogle"
-        style={{ display: "block" }}
+        style={{ display: "inline-block", width: 320, height: 110 }}
         data-ad-client={AD_CLIENT}
         data-ad-slot="4134829897"
-        data-ad-format="auto"
-        data-full-width-responsive="true"
       />
     </div>
   );
