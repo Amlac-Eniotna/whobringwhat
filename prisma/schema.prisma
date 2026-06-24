@@ -15,19 +15,82 @@ datasource db {
 }
 
 model List {
-  id        String @id @unique
+  id            String     @id @unique
+  title         String
+  item          Item[]
+  collaborators UserList[]
+  createdAt     DateTime   @default(now())
+  updateAt      DateTime   @updatedAt
+}
+
+model Item {
+  id        Int      @id @default(autoincrement())
+  list      List     @relation(fields: [listId], references: [id])
+  listId    String
   title     String
-  item      Item[]
+  who       String?
   createdAt DateTime @default(now())
   updateAt  DateTime @updatedAt
 }
 
-model Item {
-  id        Int @id @default(autoincrement())
-  list      List @relation(fields: [listId], references: [id])
-  listId    String
-  title     String
-  who  String?
+model User {
+  id            String     @id
+  name          String
+  email         String     @unique
+  emailVerified Boolean    @default(false)
+  image         String?
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+  sessions      Session[]
+  accounts      Account[]
+  lists         UserList[]
+}
+
+model Session {
+  id        String   @id
+  expiresAt DateTime
+  token     String   @unique
+  ipAddress String?
+  userAgent String?
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
-  updateAt  DateTime @updatedAt
+  updatedAt DateTime @updatedAt
+}
+
+model Account {
+  id                    String    @id
+  accountId             String
+  providerId            String
+  userId                String
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+}
+
+model Verification {
+  id         String   @id
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model UserList {
+  id      String   @id @default(cuid())
+  userId  String
+  listId  String
+  addedAt DateTime @default(now())
+  user    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  list    List     @relation(fields: [listId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, listId])
 }
