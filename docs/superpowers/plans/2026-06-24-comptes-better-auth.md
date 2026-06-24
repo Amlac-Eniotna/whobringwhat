@@ -207,22 +207,23 @@ import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import { prisma } from "@/lib/prisma";
 
+const googleId = process.env.GOOGLE_CLIENT_ID;
+const googleSecret = process.env.GOOGLE_CLIENT_SECRET;
+
 export const auth = betterAuth({
   database: prismaAdapter(prisma, { provider: "postgresql" }),
   emailAndPassword: {
     enabled: true,
     requireEmailVerification: false,
   },
-  socialProviders: {
-    google: {
-      clientId: process.env.GOOGLE_CLIENT_ID as string,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
-    },
-  },
+  socialProviders:
+    googleId && googleSecret
+      ? { google: { clientId: googleId, clientSecret: googleSecret } }
+      : {},
 });
 ```
 
-Note : better-auth lit automatiquement `BETTER_AUTH_SECRET` et `BETTER_AUTH_URL` depuis l'environnement.
+Note : better-auth lit automatiquement `BETTER_AUTH_SECRET` et `BETTER_AUTH_URL` depuis l'environnement. Le provider Google n'est activé que si `GOOGLE_CLIENT_ID` **et** `GOOGLE_CLIENT_SECRET` sont définis — ainsi le développement local sans identifiants Google fonctionne (e-mail+mot de passe), et le bouton Google s'active dès que les clés sont fournies.
 
 - [ ] **Step 2: Créer le client `lib/auth-client.ts`**
 
