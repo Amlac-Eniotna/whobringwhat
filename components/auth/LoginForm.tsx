@@ -35,7 +35,17 @@ export function LoginForm() {
   }
 
   async function handleGoogle() {
-    await authClient.signIn.social({ provider: "google", callbackURL: redirect });
+    setIsLoading(true);
+    try {
+      await authClient.signIn.social({ provider: "google", callbackURL: redirect });
+    } catch {
+      toast({
+        title: "Erreur",
+        description: "Connexion Google impossible. Réessayez.",
+        variant: "destructive",
+      });
+      setIsLoading(false);
+    }
   }
 
   return (
