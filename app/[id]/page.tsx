@@ -1,6 +1,7 @@
 import { CreateListItem } from "@/components/list/CreateListItem";
 import { Item } from "@/components/list/ListItem";
 import { ListTitle } from "@/components/list/ListTitle";
+import { TrackVisit } from "@/components/auth/TrackVisit";
 import { StartButton } from "@/components/start-button/start-button";
 import { prisma } from "@/lib/prisma";
 import { Metadata } from "next";
@@ -83,6 +84,7 @@ const List = ({
 }) => {
   return (
     <>
+      <TrackVisit listId={data.id} />
       <p className="rounded-md border border-gray-200 px-3 py-2 text-sm text-gray-600 dark:border-gray-800 dark:text-gray-400">
         Gardez ce lien pour retrouver votre liste sur tous vos appareils.
       </p>
