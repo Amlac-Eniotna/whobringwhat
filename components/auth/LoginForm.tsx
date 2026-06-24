@@ -47,6 +47,7 @@ export function LoginForm() {
           type="email"
           required
           placeholder="E-mail"
+          aria-label="E-mail"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           className="rounded-md border px-3 py-2 outline-none focus-visible:ring-2"
@@ -55,6 +56,7 @@ export function LoginForm() {
           type="password"
           required
           placeholder="Mot de passe"
+          aria-label="Mot de passe"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           className="rounded-md border px-3 py-2 outline-none focus-visible:ring-2"

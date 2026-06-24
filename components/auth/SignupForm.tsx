@@ -54,6 +54,7 @@ export function SignupForm() {
           type="email"
           required
           placeholder="E-mail"
+          aria-label="E-mail"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           className="rounded-md border px-3 py-2 outline-none focus-visible:ring-2"
@@ -63,6 +64,7 @@ export function SignupForm() {
           required
           minLength={8}
           placeholder="Mot de passe (8 caractères min.)"
+          aria-label="Mot de passe"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           className="rounded-md border px-3 py-2 outline-none focus-visible:ring-2"
