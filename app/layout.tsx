@@ -1,3 +1,4 @@
+import { HeaderAuth } from "@/components/auth/HeaderAuth";
 import { ThemeProvider } from "@/components/theme/theme-provider";
 import { ModeToggle } from "@/components/theme/toggle-theme";
 import { Toaster } from "@/components/ui/toaster";
@@ -113,7 +114,8 @@ export default function RootLayout({
                 QuiRamèneQuoi
               </h1>
             </Link>
-            <div className="p-4">
+            <div className="flex items-center gap-4 p-4">
+              <HeaderAuth />
               <ModeToggle />
             </div>
           </header>
