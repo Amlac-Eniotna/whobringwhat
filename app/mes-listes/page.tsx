@@ -1,5 +1,8 @@
+import { ClaimPendingList } from "@/components/auth/ClaimPendingList";
+import { DeleteAccountButton } from "@/components/auth/DeleteAccountButton";
 import { RemoveFromListButton } from "@/components/auth/RemoveFromListButton";
 import { SignOutButton } from "@/components/auth/SignOutButton";
+import { StartButton } from "@/components/start-button/start-button";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { Metadata } from "next";
@@ -33,15 +36,20 @@ export default async function MesListesPage() {
 
   return (
     <main className="m-auto flex min-h-[calc(100vh-68px)] w-full max-w-3xl flex-col gap-6 p-4">
+      <ClaimPendingList />
       <div className="flex items-center justify-between">
-        <h2 className="font-syne text-2xl font-black">Mes listes</h2>
+        <h2 className="font-nunito-sans text-2xl">Mes listes</h2>
         <SignOutButton />
+      </div>
+
+      <div>
+        <StartButton />
       </div>
 
       {rows.length === 0 ? (
         <p className="text-gray-500 dark:text-gray-400">
-          Aucune liste pour l{"'"}instant. Ouvrez ou créez une liste : elle apparaîtra ici
-          automatiquement.
+          Aucune liste pour l{"'"}instant. Ouvrez ou créez une liste : elle
+          apparaîtra ici automatiquement.
         </p>
       ) : (
         <ul className="flex flex-col gap-3">
@@ -62,6 +70,10 @@ export default async function MesListesPage() {
           ))}
         </ul>
       )}
+
+      <div className="mt-auto border-t border-gray-200 pt-6 dark:border-gray-800">
+        <DeleteAccountButton />
+      </div>
     </main>
   );
 }
