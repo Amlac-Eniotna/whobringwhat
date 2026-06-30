@@ -15,4 +15,13 @@ export const auth = betterAuth({
     googleId && googleSecret
       ? { google: { clientId: googleId, clientSecret: googleSecret } }
       : {},
+  account: {
+    accountLinking: {
+      enabled: true,
+      // Google vérifie les adresses e-mail : on autorise la liaison
+      // automatique d'une connexion Google à un compte e-mail/mot de passe
+      // existant portant la même adresse (évite l'erreur account_not_linked).
+      trustedProviders: ["google"],
+    },
+  },
 });
