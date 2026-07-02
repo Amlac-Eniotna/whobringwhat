@@ -1,12 +1,14 @@
 {
   "name": "bringwhat",
-  "version": "1.0",
+  "version": "2.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
     "build": "prisma generate && prisma migrate deploy && next build",
     "start": "next start",
     "lint": "eslint .",
+    "test": "vitest run",
+    "test:watch": "vitest",
     "coolify-build": "prisma generate && prisma migrate deploy && next build"
   },
   "browserslist": [
@@ -47,6 +49,7 @@
     "prettier-plugin-tailwindcss": "^0.8.0",
     "prisma": "^7.8.0",
     "tailwindcss": "^4",
-    "typescript": "^6.0.3"
+    "typescript": "^6.0.3",
+    "vitest": "^4.1.9"
   }
 }
