@@ -15,7 +15,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - Exempt from TDD: JSX/styling, French copy, static pages, configuration.
 - Runner: Vitest, `environment: "node"` (see [vitest.config.ts](vitest.config.ts)). Tests are colocated with the code they test (`actions/add-item.test.ts` next to `actions/add-item.ts`).
 - Never hit a real database in tests. Mock at module boundaries with `vi.mock`: `@/lib/prisma`, `@/lib/rate-limit` and `@/lib/auth` have shared mocks in [lib/__mocks__/](lib/__mocks__/); `next/cache` and `next/headers` are mocked inline per test file.
-- `clearMocks: true` + `restoreMocks: true` are set globally: call history is cleared and `vi.spyOn` spies are restored before each test, while default implementations passed to `vi.fn(impl)` in the shared mocks persist — use `mockReturnValueOnce`/`mockResolvedValueOnce` for per-test behavior. Cast mocks with `as unknown as Mock` (Prisma generics break `vi.mocked` inference).
+- `mockReset: true` + `restoreMocks: true` are set globally: before each test, call history and unconsumed `*Once` queues are cleared, implementations are reset to the original passed to `vi.fn(impl)` (so the shared-mock defaults persist), and `vi.spyOn` spies are restored — use `mockReturnValueOnce`/`mockResolvedValueOnce` for per-test behavior. Cast mocks with `as unknown as Mock` (Prisma generics break `vi.mocked` inference).
 - Test files are typechecked by `next build` — they must pass `npx tsc --noEmit`.
 
 ## Deployment
