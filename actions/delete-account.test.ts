@@ -52,6 +52,11 @@ describe("deleteAccount", () => {
 
     expect(result).toEqual({ success: true });
     expect(deleteUser).toHaveBeenCalledWith({ where: { id: "user_1" } });
+    expect(rateLimitMock).toHaveBeenCalledWith(
+      "delete-account:203.0.113.1",
+      5,
+      60_000,
+    );
   });
 
   it("renvoie une erreur générique si la suppression échoue", async () => {

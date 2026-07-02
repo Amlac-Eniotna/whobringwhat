@@ -24,6 +24,13 @@ function collisionError() {
   );
 }
 
+function otherFieldCollisionError() {
+  return new Prisma.PrismaClientKnownRequestError(
+    "Unique constraint failed on the fields: (`title`)",
+    { code: "P2002", clientVersion: "7.8.0", meta: { target: ["title"] } },
+  );
+}
+
 beforeEach(() => {
   vi.spyOn(console, "error").mockImplementation(() => {});
   vi.spyOn(console, "log").mockImplementation(() => {});
@@ -52,6 +59,11 @@ describe("redirectList", () => {
     const args = createList.mock.calls[0][0];
     expect(args.data.title).toBe("Titre de la liste");
     expect(args.data.id).toMatch(/^[A-Za-z0-9_-]{16}$/);
+    expect(rateLimitMock).toHaveBeenCalledWith(
+      "create-list:203.0.113.1",
+      5,
+      60_000,
+    );
   });
 
   it("réessaie avec un nouvel ID en cas de collision P2002", async () => {
@@ -76,5 +88,17 @@ describe("redirectList", () => {
       success: false,
       error: "Impossible de créer la liste. Réessayez.",
     });
+  });
+
+  it("ne réessaie pas si la collision P2002 ne cible pas l'id", async () => {
+    createList.mockRejectedValueOnce(otherFieldCollisionError());
+
+    const result = await redirectList();
+
+    expect(result).toEqual({
+      success: false,
+      error: "Impossible de créer la liste. Réessayez.",
+    });
+    expect(createList).toHaveBeenCalledTimes(1);
   });
 });

@@ -69,6 +69,11 @@ describe("trackVisit", () => {
       create: { userId: "user_1", listId: "list_1" },
       update: {},
     });
+    expect(rateLimitMock).toHaveBeenCalledWith(
+      "track-visit:203.0.113.1",
+      60,
+      60_000,
+    );
   });
 
   it("échoue silencieusement si Prisma échoue", async () => {

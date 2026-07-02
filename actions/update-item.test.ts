@@ -74,6 +74,28 @@ describe("updateItem", () => {
       data: { title: "Fromage", who: "Ana" },
     });
     expect(revalidatePathMock).toHaveBeenCalledWith("/list_1");
+    expect(rateLimitMock).toHaveBeenCalledWith(
+      "update-item:203.0.113.1",
+      60,
+      60_000,
+    );
+  });
+
+  it("accepte un FormData (who absent → undefined)", async () => {
+    updateMany.mockResolvedValueOnce({ count: 1 });
+
+    const formData = new FormData();
+    formData.append("id", "5");
+    formData.append("listId", "list_1");
+    formData.append("title", "Fromage");
+
+    const result = await updateItem(formData);
+
+    expect(result).toEqual({ success: true });
+    expect(updateMany).toHaveBeenCalledWith({
+      where: { id: 5, listId: "list_1" },
+      data: { title: "Fromage", who: undefined },
+    });
   });
 
   it("renvoie une erreur générique si Prisma échoue", async () => {

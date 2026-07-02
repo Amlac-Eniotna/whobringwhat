@@ -56,6 +56,15 @@ describe("addItem", () => {
     });
   });
 
+  it("rejette un listId vide", async () => {
+    const result = await addItem({ listId: "", title: "Pain" });
+
+    expect(result).toEqual({
+      success: false,
+      error: { listId: ["L'ID de la liste est requis"] },
+    });
+  });
+
   it("rejette un titre de plus de 100 caractères", async () => {
     const result = await addItem({
       listId: "list_1",
@@ -124,6 +133,11 @@ describe("addItem", () => {
       data: { listId: "list_1", title: "Pain", who: "Zoé" },
     });
     expect(revalidatePathMock).toHaveBeenCalledWith("/list_1");
+    expect(rateLimitMock).toHaveBeenCalledWith(
+      "add-item:203.0.113.1",
+      30,
+      60_000,
+    );
   });
 
   it("accepte un FormData (who absent → undefined)", async () => {

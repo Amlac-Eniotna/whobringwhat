@@ -58,6 +58,11 @@ describe("removeFromMyLists", () => {
       where: { userId: "user_1", listId: "list_1" },
     });
     expect(revalidatePathMock).toHaveBeenCalledWith("/mes-listes");
+    expect(rateLimitMock).toHaveBeenCalledWith(
+      "remove-from-my-lists:203.0.113.1",
+      30,
+      60_000,
+    );
   });
 
   it("renvoie une erreur générique si Prisma échoue", async () => {

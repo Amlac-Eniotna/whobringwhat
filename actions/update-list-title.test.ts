@@ -46,6 +46,15 @@ describe("updateListTitle", () => {
     });
   });
 
+  it("rejette un id vide", async () => {
+    const result = await updateListTitle({ id: "", title: "Fête" });
+
+    expect(result).toEqual({
+      success: false,
+      error: { id: ["L'ID de la liste est requis"] },
+    });
+  });
+
   it("rejette un titre de plus de 100 caractères", async () => {
     const result = await updateListTitle({
       id: "list_1",
@@ -88,6 +97,27 @@ describe("updateListTitle", () => {
       data: { title: "Pique-nique" },
     });
     expect(revalidatePathMock).toHaveBeenCalledWith("/list_1");
+    expect(rateLimitMock).toHaveBeenCalledWith(
+      "update-list-title:203.0.113.1",
+      60,
+      60_000,
+    );
+  });
+
+  it("accepte un FormData et met à jour le titre", async () => {
+    findList.mockResolvedValueOnce(fakeList);
+    updateList.mockResolvedValueOnce({ ...fakeList, title: "Pique-nique" });
+
+    const formData = new FormData();
+    formData.append("id", "list_1");
+    formData.append("title", "Pique-nique");
+
+    const result = await updateListTitle(formData);
+
+    expect(result).toEqual({
+      success: true,
+      data: { ...fakeList, title: "Pique-nique" },
+    });
   });
 
   it("renvoie une erreur générique si Prisma échoue", async () => {

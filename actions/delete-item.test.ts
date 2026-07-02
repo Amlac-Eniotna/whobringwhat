@@ -52,6 +52,11 @@ describe("deleteItem", () => {
       where: { id: 5, listId: "list_1" },
     });
     expect(revalidatePathMock).toHaveBeenCalledWith("/list_1");
+    expect(rateLimitMock).toHaveBeenCalledWith(
+      "delete-item:203.0.113.1",
+      60,
+      60_000,
+    );
   });
 
   it("échoue si aucun item ne correspond (count 0)", async () => {
