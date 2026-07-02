@@ -7,9 +7,16 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - Build: `npm run build` (runs `prisma generate && prisma migrate deploy && next build`)
 - Start: `npm run start`
 - Lint: `npm run lint`
+- Tests: `npm test` (Vitest, single run) / `npm run test:watch` (watch mode)
 - `coolify-build` is an alias of `build` kept for legacy Coolify deploys.
 
-There is no test suite configured in this repository.
+## Tests & TDD
+- **TDD is mandatory for all business logic** (server actions, `lib/` helpers, API routes): write a failing test first, watch it fail, write the minimal code to make it pass, then refactor (red → green → refactor).
+- Exempt from TDD: JSX/styling, French copy, static pages, configuration.
+- Runner: Vitest, `environment: "node"` (see [vitest.config.ts](vitest.config.ts)). Tests are colocated with the code they test (`actions/add-item.test.ts` next to `actions/add-item.ts`).
+- Never hit a real database in tests. Mock at module boundaries with `vi.mock`: `@/lib/prisma`, `@/lib/rate-limit` and `@/lib/auth` have shared mocks in [lib/__mocks__/](lib/__mocks__/); `next/cache` and `next/headers` are mocked inline per test file.
+- `clearMocks: true` + `restoreMocks: true` are set globally: call history is cleared and `vi.spyOn` spies are restored before each test, while default implementations passed to `vi.fn(impl)` in the shared mocks persist — use `mockReturnValueOnce`/`mockResolvedValueOnce` for per-test behavior. Cast mocks with `as unknown as Mock` (Prisma generics break `vi.mocked` inference).
+- Test files are typechecked by `next build` — they must pass `npx tsc --noEmit`.
 
 ## Deployment
 - **Hosting**: Vercel (see [vercel.json](vercel.json)).
