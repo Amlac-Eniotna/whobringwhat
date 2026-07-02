@@ -12,7 +12,7 @@ export default defineConfig({
     environment: "node",
     include: ["**/*.test.ts"],
     exclude: ["node_modules/**", "lib/generated/**", ".next/**"],
-    clearMocks: true,
+    mockReset: true,
     restoreMocks: true,
   },
 });
