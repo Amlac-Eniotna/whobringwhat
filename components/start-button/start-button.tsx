@@ -44,6 +44,7 @@ export function StartButton() {
     <Button
       onClick={handleCreateList}
       disabled={isLoading}
+      size="xl"
       className={isLoading ? "cursor-default" : "cursor-pointer"}
     >
       {isLoading ? (

@@ -2,10 +2,9 @@ import { CreateListItem } from "@/components/list/CreateListItem";
 import { Item } from "@/components/list/ListItem";
 import { ListTitle } from "@/components/list/ListTitle";
 import { TrackVisit } from "@/components/auth/TrackVisit";
-import { StartButton } from "@/components/start-button/start-button";
 import { prisma } from "@/lib/prisma";
 import { Metadata } from "next";
-import Link from "next/link";
+import { notFound } from "next/navigation";
 import { cache } from "react";
 
 const getList = cache((id: string) =>
@@ -37,35 +36,17 @@ export async function generateMetadata({
 const Page = async ({ params }: { params: Promise<{ id: string }> }) => {
   const id = (await params).id;
   const list = await getList(id);
+
+  // notFound() plutôt qu'un rendu d'erreur inline : cette route attrape toutes
+  // les URL non reconnues du site. Sans cet appel, /wp-admin, /index.html ou une
+  // simple faute de frappe répondaient HTTP 200 (soft 404). Le contenu affiché
+  // est celui de app/not-found.tsx, cette fois avec un vrai statut 404.
+  if (!list) notFound();
+
   return (
     <main className="m-auto flex min-h-[calc(100vh-68px)] w-full max-w-3xl flex-col items-center justify-center gap-8 p-4">
-      {list ? <List data={list} /> : <E404 />}
+      <List data={list} />
     </main>
-  );
-};
-
-const E404 = () => {
-  return (
-    <>
-      <StartButton />
-      <p className="max-w-lg text-sm text-pretty text-gray-500 dark:text-gray-600">
-        En cliquant sur «Créer une liste», vous acceptez nos{" "}
-        <Link
-          href="/terms"
-          className="underline hover:text-gray-700 dark:hover:text-gray-500"
-        >
-          conditions d{"'"}utilisation
-        </Link>{" "}
-        et notre{" "}
-        <Link
-          href="/privacy"
-          className="underline hover:text-gray-700 dark:hover:text-gray-500"
-        >
-          politique de confidentialité
-        </Link>
-        . Vos données sont stockées de manière anonyme pendant 2 ans.
-      </p>
-    </>
   );
 };
 

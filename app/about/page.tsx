@@ -69,7 +69,7 @@ export default function About() {
         </h2>
         <p>
           QuiRamèneQuoi est une application web construite avec les technologies
-          modernes (Next.js, MySQL). Vos listes sont stockées de manière
+          modernes (Next.js, PostgreSQL). Vos listes sont stockées de manière
           sécurisée et accessibles depuis n{"'"}importe quel appareil via votre
           lien unique. Aucune installation requise.
         </p>

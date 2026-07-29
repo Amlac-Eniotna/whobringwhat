@@ -16,7 +16,7 @@ const faqs = [
   {
     question: "Faut-il créer un compte pour utiliser QuiRamèneQuoi ?",
     answer:
-      "Non, aucune inscription n'est requise. Il n'y a ni compte, ni mot de passe, ni email. Votre liste est accessible uniquement via le lien unique qui vous est attribué à la création.",
+      "Non. Vous pouvez créer et partager une liste sans aucune inscription : elle reste accessible via le lien unique attribué à sa création. Un compte est proposé en option, si vous préférez retrouver toutes vos listes au même endroit plutôt que de conserver chaque lien. Il se crée avec une adresse e-mail et un mot de passe, ou via Google.",
   },
   {
     question: "Comment partager ma liste avec mes invités ?",
@@ -51,7 +51,7 @@ const faqs = [
   {
     question: "Que se passe-t-il si je perds le lien de ma liste ?",
     answer:
-      "Malheureusement, il n'est pas possible de récupérer un lien perdu car aucun email ou compte n'est associé à votre liste. Pensez à sauvegarder votre lien en le mettant en favori dans votre navigateur ou en l'enregistrant dans vos notes.",
+      "Si vous n'avez pas de compte, le lien est irrécupérable : aucune adresse e-mail n'est associée à la liste. Pensez à le mettre en favori dans votre navigateur ou à l'enregistrer dans vos notes. Si vous êtes connecté, en revanche, chaque liste que vous ouvrez est rattachée à votre compte et reste accessible depuis « Mes listes ».",
   },
   {
     question: "Puis-je supprimer ma liste ou un article ?",
@@ -61,7 +61,7 @@ const faqs = [
   {
     question: "Combien de temps mes données sont-elles conservées ?",
     answer:
-      "Vos listes et leurs articles sont conservés pendant 2 ans, puis automatiquement supprimés de nos serveurs. Aucune donnée personnelle (email, IP, etc.) n'est collectée.",
+      "Vos listes et leurs articles sont conservés 2 ans après leur dernière modification, puis automatiquement supprimés de nos serveurs. Si vous avez créé un compte, votre adresse e-mail et vos informations de session sont conservées tant que ce compte existe : vous pouvez le supprimer à tout moment depuis « Mes listes », ce qui efface également ces données.",
   },
   {
     question: "QuiRamèneQuoi est-il gratuit ?",
@@ -76,7 +76,7 @@ const faqs = [
   {
     question: "Mes données sont-elles sécurisées ?",
     answer:
-      "Oui. Toutes les communications entre votre navigateur et nos serveurs sont chiffrées via HTTPS. Vos données sont stockées de manière sécurisée chez Vercel. Aucune donnée personnelle identifiable n'est collectée.",
+      "Oui. Toutes les communications entre votre navigateur et nos serveurs sont chiffrées via HTTPS, et vos données sont stockées de manière sécurisée chez Vercel. Sans compte, aucune donnée personnelle identifiable n'est collectée. Avec un compte, nous conservons votre adresse e-mail et les informations nécessaires à la connexion — le détail figure dans notre politique de confidentialité.",
   },
 ];
 

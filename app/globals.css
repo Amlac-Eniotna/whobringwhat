@@ -114,7 +114,7 @@ body {
   background-image:
     radial-gradient(
       ellipse at center,
-      --background 0%,
+      var(--background) 0%,
       oklch(12.964% 0.02739 261.707 / 0.075) 50%,
       transparent 70%
     ),
