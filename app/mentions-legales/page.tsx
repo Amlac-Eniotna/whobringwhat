@@ -8,17 +8,14 @@ export const metadata: Metadata = {
 };
 
 /**
- * ⚠️ À COMPLÉTER AVANT DÉPLOIEMENT.
- *
  * L'article 6-III de la LCEN impose à tout éditeur de site accessible au public
- * de publier son identité et un moyen de le contacter. Les valeurs marquées
- * « À_COMPLÉTER » ci-dessous n'ont volontairement pas été inventées : elles
- * doivent être renseignées par l'éditeur du site.
+ * de se rendre identifiable. Le 6-III-2 dispense l'éditeur non professionnel de
+ * publier son adresse personnelle, à condition d'avoir communiqué son identité
+ * à son hébergeur — ce qu'implique la détention d'un compte Vercel. Seuls le
+ * nom, une adresse de contact et l'hébergeur sont donc publiés ici.
  *
- * Pour un particulier éditant un site non professionnel, la loi permet de ne
- * publier que le nom de l'hébergeur, à condition d'avoir communiqué son
- * identité à ce dernier — mais une adresse de contact reste nécessaire pour
- * traiter les demandes RGPD référencées dans /privacy.
+ * L'adresse de contact doit rester valide : elle est le canal des demandes RGPD
+ * annoncées dans /privacy, auxquelles il faut répondre sous un mois.
  */
 export default function MentionsLegales() {
   return (
@@ -28,15 +25,26 @@ export default function MentionsLegales() {
       <section className="mb-8 space-y-4">
         <h2 className="text-2xl font-semibold">Éditeur du site</h2>
         <p>
-          QuiRamèneQuoi est édité par À_COMPLÉTER (nom ou raison sociale).
-          <br />
-          Statut : À_COMPLÉTER
-          <br />
-          Adresse : À_COMPLÉTER
-          <br />
-          Contact : À_COMPLÉTER (adresse e-mail)
+          QuiRamèneQuoi est édité par Antoine Calma, à titre personnel et non
+          professionnel. Le site est un projet indépendant : aucune société n
+          {"'"}est constituée pour son exploitation.
         </p>
-        <p>Directeur de la publication : À_COMPLÉTER</p>
+        <p>
+          Directeur de la publication : Antoine Calma
+          <br />
+          Contact :{" "}
+          <a
+            href="mailto:quiramenequoi@antoinecalma.fr"
+            className="underline hover:text-gray-700 dark:hover:text-gray-300"
+          >
+            quiramenequoi@antoinecalma.fr
+          </a>
+        </p>
+        <p className="text-sm text-gray-600 dark:text-gray-400">
+          Conformément à l{"'"}article 6-III-2 de la LCEN, l{"'"}éditeur non
+          professionnel qui a communiqué son identité à son hébergeur peut ne
+          pas publier son adresse personnelle.
+        </p>
       </section>
 
       <section className="mb-8 space-y-4">

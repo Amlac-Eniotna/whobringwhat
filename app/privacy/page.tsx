@@ -147,7 +147,14 @@ export default function PrivacyPolicy() {
         <h2 className="text-2xl font-semibold">Contact</h2>
         <p>
           Pour toute question relative à cette politique ou pour exercer vos
-          droits : voir les{" "}
+          droits, écrivez à{" "}
+          <a
+            href="mailto:quiramenequoi@antoinecalma.fr"
+            className="underline hover:text-gray-700 dark:hover:text-gray-300"
+          >
+            quiramenequoi@antoinecalma.fr
+          </a>
+          . L{"'"}identité de l{"'"}éditeur figure dans les{" "}
           <Link
             href="/mentions-legales"
             className="underline hover:text-gray-700 dark:hover:text-gray-300"
